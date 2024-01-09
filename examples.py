@@ -2,7 +2,7 @@ import uix
 
 from uix.elements import grid, col, button
 
-from components import basic_slider, component_list
+from src.uix_components import basic_slider, component_list
 
 def basic_slider_example():
     return basic_slider(name="Deneme", id = "mySlider", callback = lambda ctx, id, value: print(f"Slider {id} changed to: {value}"))
