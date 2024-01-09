@@ -47,32 +47,7 @@ uix.html.add_css("imagecard-css",""".card {
     background-color: rgba(0, 0, 0, .65);
     top: 80%;
 }
-
-.button-section {
-    position: absolute;
-    top: 6px;
-    left: 6px;
-    z-index: 10;
-    width: fit-content !important;
-    padding: 5px;
-    background-color: rgba(0, 0, 0, 0.8);
-    border-radius: 5px;
-    height: fit-content;
-    min-width: 0px !important;
-    gap: 5px;
-    min-width: 0px;
-}
-                  
-.button-section button {
-    padding: 5px;
-    border: none;
-    cursor: pointer;
-    min-width: 0px !important;
-}
-                  
-.button-section button img {
-    min-width: 0px;
-}""")
+""")
 
 class basic_imagecard(uix.Element):
     def __init__(self, value=None, id=None, imagesrc=None, textstr=None):
