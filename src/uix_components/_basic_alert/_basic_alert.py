@@ -1,7 +1,5 @@
 import uix
 from uix.elements import text
-from uix.docs.document import document
-
 
 uix.html.add_css("alert-css", """
 .alert{
@@ -118,14 +116,15 @@ class basic_alert(uix.Element):
 title = "Basic Alert"
 
 description = """
-# basic_alert(id, type, duration)
+# basic_alert(id, value, type = ["alert-normal", "alert-success", "alert-info", "alert-warning", "alert-danger"])
 1. Basic Alert bir alert komponentidir.
     | attr          | desc                                                |
     | :------------ | :------------------------------------------------   |
     | id            | Komponentin id'si                                   |
+    | value         | Komponentin değeri                                  |
     | type          | Komponentin tipi                                    |
-    | duration      | Komponentin açık kalma süresi                      |
 """
+
 sample = """
 import uix
 import uix_components
@@ -139,3 +138,4 @@ def alert_example():
         button("Show Alert", id = "show_alert").on("click", lambda ctx, id, value: alert.open("alert-success", "selam"))
     return content
 """
+
