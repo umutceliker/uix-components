@@ -1,0 +1,29 @@
+
+
+
+
+summary {
+  display: block;
+  background-color: var(--ait);
+  padding: 5px;
+  border-radius: 3px;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+
+.details_acc {
+  box-sizing: border-box;
+  width: 100%;
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 10px;
+  transition: max-height 500ms ease-out, border 0ms linear;
+}
+
+details[open] + .details_acc {
+  max-height: 1000px;
+  transition: max-height 500ms ease-in-out, border 0ms linear;
+}
