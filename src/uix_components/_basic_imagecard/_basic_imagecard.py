@@ -55,6 +55,8 @@ class basic_imagecard(uix.Element):
 
         self.image = image
         self.textstr = textstr
+        self.style("max-width","300px")
+        self.style("max-heigth","300px")
 
         with self:
             with div().cls("card wall hall"):
