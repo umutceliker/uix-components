@@ -1,9 +1,6 @@
 import uix
 import os
-from uix.elements import col,button,dialog,image
-path = os.path.join(os.path.dirname(__file__))
-print(path)
-uix.app.add_static_route("close_icon", path)
+from uix.elements import col, button, dialog, image, svg
 
 uix.html.add_css("dialog.css","""
     .dialog-container{
@@ -25,6 +22,8 @@ uix.html.add_css("dialog.css","""
     }
                   """)
 
+close_btn_svg='<g><path fill="#ffffffff" d="M195.2 195.2a64 64 0 0 1 90.496 0L512 421.504 738.304 195.2a64 64 0 0 1 90.496 90.496L602.496 512 828.8 738.304a64 64 0 0 1-90.496 90.496L512 602.496 285.696 828.8a64 64 0 0 1-90.496-90.496L421.504 512 195.2 285.696a64 64 0 0 1 0-90.496z"/></g>'
+
 class basic_dialog(dialog):
     def __init__(self,
                 id=None,
@@ -40,7 +39,7 @@ class basic_dialog(dialog):
             self.cls("dialog-container")
             with col(id="dialog-column"):
                 with button("",id = self.btnID).on("click", lambda ctx, id, value: ctx.elements[self.id].hide()):
-                    image("close_icon/close_icon.svg").size(20,20)
+                    svg(close_btn_svg).size(20,20).viewbox("0,0,1024,1024")
                 for element in self.dialog_elements:
                     element()
 
