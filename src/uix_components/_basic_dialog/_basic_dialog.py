@@ -1,5 +1,9 @@
 import uix
-from uix.elements import col,button,dialog
+import os
+from uix.elements import col,button,dialog,image
+path = os.path.join(os.path.dirname(__file__))
+print(path)
+uix.app.add_static_route("close_icon", path)
 
 uix.html.add_css("dialog.css","""
     .dialog-container{
@@ -35,7 +39,8 @@ class basic_dialog(dialog):
         with self:
             self.cls("dialog-container")
             with col(id="dialog-column"):
-                button("X",id = self.btnID).on("click", lambda ctx, id, value: ctx.elements[self.id].hide())
+                with button("",id = self.btnID).on("click", lambda ctx, id, value: ctx.elements[self.id].hide()):
+                    image("close_icon/close_icon.svg").size(20,20)
                 for element in self.dialog_elements:
                     element()
 
