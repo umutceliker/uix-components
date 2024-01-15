@@ -1,90 +1,7 @@
 import uix
 from uix.elements import text
 
-uix.html.add_css("alert-css", """
-.alert{
-    z-index: 9999;
-    width: 300px;
-    height: fit-content;
-    color: white;
-    padding: 20px;
-    border-radius: 5px;
-    margin: 10px;
-    font-size: 20px;
-    position:absolute;
-    bottom: 0px;
-    right: 0;
-    display: flex;
-    visibility: hidden;
-    word-wrap: break-word;
-    align-items: flex-start;
-}
-
-
-@keyframes alert-open {
-    0%, 90% {
-                bottom: -200px;
-            }
-    10%, 80% {
-                bottom: 0px;
-            }
-    99% {
-                visibility: hidden;
-                bottom: -200px;
-            }
-    100% {
-                visibility: hidden;
-                bottom: 0px;
-            }
-}
-
-@keyframes alert-close {
-    0% {
-                bottom: 0px;
-            }
-    10%, 99% {
-                visibility: hidden;
-                bottom: -200px;
-                }
-    100% {
-                visibility: hidden;
-                bottom: 0px;
-            }
-}
-            
-.alert-start {
-                        visibility: visible;
-                        animation: alert-open 5000ms ease-in-out forwards;            
-}
-
-.alert-start:hover {
-                        animation-play-state: paused;
-}
-
-.alert-end {
-                        visibility: visible;
-                        animation: alert-close 5000ms ease-in-out forwards;
-}
-
-.alert-normal {
-    background-color: var(--normal-color);
-}
-
-.alert-success {
-    background-color: var(--success-color);
-}
-
-.alert-info {
-    background-color: var(--info-color);
-}
-
-.alert-warning {
-    background-color: var(--warning-color);
-}
-
-.alert-danger {
-    background-color: var(--danger-color);
-}""")
+uix.html.add_css_file("_basic_alert.css",__file__)
 
 class basic_alert(uix.Element):
     def __init__(self, value=None, id=None, type="normal"):
@@ -94,7 +11,7 @@ class basic_alert(uix.Element):
         self.current_type = "alert-normal"
 
         with self.cls("alert container" + self.current_type).on("click", self.close):
-            self.text = text(value=self.value).cls("title")
+            self.text = text(value=self.value)
         
     def setBaseStyle(self):
         self.classes = ["alert" , "container"]
