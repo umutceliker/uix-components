@@ -1,46 +1,21 @@
 import uix
 
-from uix.elements import grid, col, button
+from uix.elements import container, file
 
-from src.uix_components import basic_slider, component_list
-
-def basic_slider_example():
-    return basic_slider(name="Deneme", id = "mySlider", callback = lambda ctx, id, value: print(f"Slider {id} changed to: {value}"))
-
-def comp1():
-    def callback(ctx, id, value):
-        print(f"Slider {id} changed to: {value}")
-    basic_slider(name="Deneme1", id = "mySlider1", callback = callback)
-
-def comp2():
-    def callback(ctx, id, value):
-        print(f"Slider {id} changed to: {value}")
-    basic_slider(name="Deneme2", id = "mySlider2",callback=callback)
-
-def component_list_example():
-    return component_list(id = "comp_main", components = [comp1,comp2])
-
-examples = { "Slider Example": basic_slider_example,
-            "Component List Example": component_list_example}
+from src.uix_components import image_viewer
 
 
-def on_change_example(ctx, id, value):
-    print("Example =", value)
-    content = ctx.elements["content"]
-    if value in examples:
-        content.update(examples[value])
-    
-
-
-with grid("",columns = "1fr 5fr") as main:
-    with col() as menu:
-        menu.cls("border")
-        button("Slider Example", id = "slider_example").on("click", on_change_example)
-        button("Component List Example", id = "comp_list_example").on("click", on_change_example)
-    with col(id = "content") as content:
-        content.cls("container border")
-        basic_slider_example()
-
+def on_upload(ctx, id, event, data, status):
+    print("on_upload", id, event, data, status)
+    if status == "done":
+        iw = ctx.session.elements["iw1"]
+        if event == "select":
+            iw.value = data[0].url
+        
+            
+with container() as main: 
+    file(id="file1",accept="image/*",multiple=False,callback=on_upload).cls("center")
+    image_viewer(id = "iw1", value="https://ai.ait.com.tr/wp-content/uploads/AIT_AI_LOGO.png",hasButtons=True).size(600,720)
 
 
 uix.start(ui=main, config={"debug": True})
