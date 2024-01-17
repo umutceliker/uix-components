@@ -48,13 +48,17 @@ function createIcon(id, name, tooltip) {
     const config = document.getElementById(id).viewerConfig;
     const viewer = document.getElementById(id).viewer;
     image_url = window.location + config.prefixUrl + "ivb_" + name;
+
+    button_click = function (event) {
+        clientEmit(id, name, "button_click")
+    }
     let button = new OpenSeadragon.Button({
         tooltip: tooltip,
         srcRest: image_url + ".svg",
         srcGroup: image_url + ".svg",
         srcHover: image_url + "-hover.svg",
         srcDown: image_url + "-hover.svg",
-        onClick: clientEmit(viewer.element.id, "", name)
+        onClick: button_click
     });
     viewer.buttonGroup.element.appendChild(button.element);
     ['imgRest', 'imgGroup','imgHover', 'imgDown'].forEach(imgType => {
