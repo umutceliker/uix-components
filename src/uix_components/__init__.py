@@ -12,3 +12,4 @@ from ._basic_details._basic_details import basic_details
 from ._basic_alert._basic_alert import basic_alert
 from ._credit_card._credit_card import credit_card
 from ._image_viewer._image_viewer import image_viewer
+from ._basic_tree_view._basic_tree_view import basic_tree_view
