@@ -11,7 +11,7 @@ class basic_alert(uix.Element):
         self.current_type = "alert-normal"
 
         with self.cls("alert container" + self.current_type).on("click", self.close):
-            self.text = text(value=self.value)
+            self.text = text(value=self.value, id=self.id + "_text")
         
     def setBaseStyle(self):
         self.classes = ["alert" , "container"]
