@@ -1,0 +1,44 @@
+
+
+.pure-tree.main-tree {
+  width: 30em;
+  display: inline-block;
+}
+
+.pure-tree:not(.main-tree) {
+  width: 100%;
+  padding-left: 1.2em;
+}
+
+.pure-tree:not(.main-tree) li {
+  overflow: hidden;
+  height: 0;
+  display: block;
+}
+
+.pure-tree label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-bottom: 1px dashed white;
+  padding: 0.5em 1% 0.5em 1%;
+  justify-content: space-between;
+  width: 90%;
+}
+
+
+.pure-tree label:hover {
+  color: var(--background-secondary);
+}
+
+.comp_type{
+ display: none;
+}
+.comp_type:checked + .super-class {
+ background-color: var(--background-mask);
+}
+
+.comp_type:checked ~ ul > li {
+  height: auto;
+}
+ 
