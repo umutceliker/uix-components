@@ -1,5 +1,5 @@
 import uix
-from uix.elements import tree_view,unorderedlist, listitem,label, div,check,radio,row,col
+from uix.elements import unorderedlist, listitem,label, div,check,radio,row,col
 from .._basic_checkbox._basic_checkbox import basic_checkbox
 
 
