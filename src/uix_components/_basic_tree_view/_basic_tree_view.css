@@ -22,8 +22,10 @@
   cursor: pointer;
   border-bottom: 1px dashed white;
   padding: 0.5em 1% 0.5em 1%;
-  justify-content: space-between;
+  justify-content: start;
   width: 90%;
+  flex-direction: row-reverse;
+  gap: 5px;
 }
 
 
@@ -42,3 +44,18 @@
   height: auto;
 }
  
+.plus {
+display: inline-block; 
+background-repeat: no-repeat;
+background-size: 16px 16px !important;
+width: 16px;
+height: 16px; 
+}
+
+.plus {
+    background-image: url(https://img.icons8.com/material-rounded/24/ffffff/plus--v1.png);
+}
+
+.comp_type:checked + .super-class .plus {
+    background-image: url(https://img.icons8.com/sf-regular-filled/48/FFFFFF/minus.png);
+}
