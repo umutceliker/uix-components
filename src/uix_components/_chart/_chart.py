@@ -1,0 +1,118 @@
+import random
+import uix
+from uix.elements import canvas, row, button, div
+
+uix.html.add_header_item("chart-cdn",'<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js" integrity="sha512-ZwR1/gSZM3ai6vCdI+LVF1zSq/5HznD3ZSTk7kajkaj4D292NLuduDCO1c/NT8Id+jE58KYLKT7hXnbtryGmMg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>')
+uix.html.add_script_source('chart-js', 'chart.js',localpath=__file__, beforeMain=False)
+
+class chart(uix.Element):
+    def __init__(self, id = None, type = "line", value=None):
+        super().__init__(id=id, value=value)
+        self.tag = "canvas"
+        self.value_name = None
+        self.type = type
+
+    def bind(self,session):
+        if self.id is None:
+            self.id = "chart_" + str(session.next_id())
+        super().bind(session)
+
+    def init(self):
+        self.session.queue_for_send(self.id, self.value, "init-chart")
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
+        if self._value is not None:
+            self.session.send(self.id, self.value, "update-chart")
+
+
+
+
+if __name__ == "__main__":
+    chart_index = 0
+    data1 = [65, 59, 80, 81, 56, 55]
+    data2 = [15, 59, 20, 81, 26, 55]
+
+    # Create 100 points of random data
+    scatter_data1 = []
+    scatter_data2 = []
+
+    for i in range(100):
+        scatter_data1.append({"x": random.randint(0, 100),"y": random.randint(0, 100)})
+        scatter_data2.append({"x": random.randint(0, 100),"y": random.randint(0, 100)})
+
+    charts = [
+        {
+            "type": "bar",
+            "data": {
+                "labels": ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                "datasets": [{
+                    "label": "# of Votes",
+                    "data": data1,
+                }]
+            }
+        },
+        {
+            "type": "line",
+            "data": {
+                "labels": ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                "datasets": [{
+                    "label": "Lines",
+                    "data": data2,
+                }]
+            }
+        },
+        {
+            "type": "bubble",
+            "data": {
+                "datasets": [{
+                    "label": "Bubble Dataset",
+                    "data": [{"x":12,"y":34,"r":10},
+                             {"x":22,"y":13,"r":15},
+                             {"x":32,"y":12,"r":5}],
+                }]
+            }
+        },
+        {
+            "type": "scatter",
+            "data": {
+                "datasets": [{
+                    "label": "Scatter Dataset 1",
+                    "data": scatter_data1,
+                    "backgroundColor": 'rgb(255, 99, 232)'
+                },
+                {
+                    "label": "Scatter Dataset 2",
+                    "data": scatter_data2,
+                    "backgroundColor": 'rgb(255, 199, 132)'
+                }],
+                
+            }
+        }]
+    
+    def fchart():
+        chart(value=charts[chart_index])
+
+    def update(ctx,id,value):
+        global chart_index
+        chart_index = int(id[-2:])
+        print("update",chart_index)
+        
+        ctx.elements["chart1"].update(fchart)
+
+
+    with div("") as main:
+        with row():
+            button(id = "btn_00", value = "Bar").on("click", update)
+            button(id = "btn_01", value = "Line").on("click", update)
+            button(id = "btn_02", value = "Bubble").on("click", update)
+            button(id = "btn_03", value = "Scatter").on("click", update)
+
+        with div("", id="chart1"):
+            chart(value=charts[chart_index])
+    uix.start(ui=main, config={"debug": True})
