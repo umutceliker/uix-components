@@ -6,19 +6,15 @@ uix.html.add_header_item("chart-cdn",'<script src="https://cdnjs.cloudflare.com/
 uix.html.add_script_source('chart-js', 'chart.js',localpath=__file__, beforeMain=False)
 
 class chart(uix.Element):
-    def __init__(self, id = None, type = "line", value=None):
-        super().__init__(id=id, value=value)
-        self.tag = "canvas"
-        self.value_name = None
+    def __init__(self, id, type = "line", value=None):
+        super().__init__(id=id, value=None)
         self.type = type
-
-    def bind(self,session):
-        if self.id is None:
-            self.id = "chart_" + str(session.next_id())
-        super().bind(session)
+        self.canvas_id = id+"_canvas"
+        with self:
+            self.canvas = canvas(id=self.canvas_id,value = value)
 
     def init(self):
-        self.session.queue_for_send(self.id, self.value, "init-chart")
+        self.session.queue_for_send(self.canvas_id, self.canvas.value, "init-chart")
 
     @property
     def value(self):
@@ -26,9 +22,9 @@ class chart(uix.Element):
 
     @value.setter
     def value(self, value):
-        self._value = value
-        if self._value is not None:
-            self.session.send(self.id, self.value, "update-chart")
+        with self:
+            self.canvas = canvas(id=self.canvas_id,value = value)
+        self.update()
 
 
 
@@ -95,15 +91,13 @@ if __name__ == "__main__":
             }
         }]
     
-    def fchart():
-        chart(value=charts[chart_index])
 
     def update(ctx,id,value):
         global chart_index
         chart_index = int(id[-2:])
         print("update",chart_index)
         
-        ctx.elements["chart1"].update(fchart)
+        ctx.elements["chart1"].value = charts[chart_index]
 
 
     with div("") as main:
@@ -113,6 +107,5 @@ if __name__ == "__main__":
             button(id = "btn_02", value = "Bubble").on("click", update)
             button(id = "btn_03", value = "Scatter").on("click", update)
 
-        with div("", id="chart1"):
-            chart(value=charts[chart_index])
+        chart(id = "chart1", value=charts[chart_index])
     uix.start(ui=main, config={"debug": True})
