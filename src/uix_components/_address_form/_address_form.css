@@ -1,0 +1,93 @@
+.address-form {
+    display: flex;
+    align-items: center;
+    height: max-content;
+    width: 100%;
+    justify-content: center;
+}
+
+.form-content .address-grid:first-of-type {
+    grid-area: name;
+}
+
+.form-content .address-grid:nth-of-type(2) {
+    grid-area: surname;
+}
+
+.form-content .address-grid:nth-of-type(3) {
+    grid-area: phone;
+}
+
+.form-content .address-grid:nth-of-type(4) {
+    grid-area: country;
+}
+
+.form-content .address-grid:nth-of-type(5) {
+    grid-area: hiddenAddress;
+}
+
+.form-content .address-grid:nth-of-type(6) {
+    grid-area: address;
+}
+
+.form-content .address-grid:nth-of-type(7) {
+    grid-area: addressTitle;
+}
+
+.form-content .address-grid:nth-of-type(8) {
+    grid-area: button;
+}
+.form-content .address-grid:nth-of-type(9) {
+    grid-area: corporate;
+}
+.form-content .address-grid:nth-of-type(10) {
+    grid-area: add;
+}
+
+.form-content {
+    gap: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr !important; /* Updated to use fractional units */
+    grid-template-areas:
+        "name surname"
+        "phone country"
+        "hiddenAddress hiddenAddress"
+        "address address"
+        "addressTitle addressTitle"
+        "button button"
+        "corporate corporate"
+        "add add"; /* Adjusted the grid areas */
+    max-width: 400px;
+    width: 100%; /* Use 100% width instead of max-content */
+    height: 100%;
+    border-radius: 0px 12px 12px 0px ;
+}
+
+.address-grid select,
+.address-grid input {
+    width: 100%; /* Set width to 100% for inputs and selects */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    height: 40px;
+}
+.address-grid input {
+    height: 40px;
+}
+
+.address-grid .row {
+    gap: 10px;
+}
+.personal-button,
+.cancel-button,
+.save-button {
+    width: 100%;
+}
+
+.cancel-button {
+    background-color: var(--background-secondary);
+}
+
+.eFatura-checkbox {
+    width: 100%;
+    padding: 5px;
+    font-size: small;
+}
