@@ -1,0 +1,21 @@
+.row-section {
+    width: fit-content !important;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 5px;
+    height: fit-content;
+    min-width: 0px !important;
+    gap: 5px;
+}
+
+.btn-section {
+    padding: 1px;
+    background-color: transparent;
+    cursor: pointer;
+    min-width: 20px; 
+  }
+
+.fa-icon{
+    font-size: 20px;
+    color: var(--ait)
+}
