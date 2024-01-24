@@ -18,7 +18,7 @@ class basic_checkbox(uix.Element):
             callback=None,
             **kwargs
         ):
-        super().__init__(value=value,id=id,**kwargs)
+        super().__init__(id=id, **kwargs) # value won't be sent to super class, only used to set checkbox value
         self.label = label_text
         self.callback = callback
         self.checkboxID = id + "-checkbox"
@@ -26,25 +26,13 @@ class basic_checkbox(uix.Element):
         self.cls("checkbox-container")
 
         with self:
-            if self.value:
-                self.checkbox = (
-                    check(id=self.checkboxID)
-                        .on("click", self.set_value)
-                        .checked()
-                )
-            else:
-                self.checkbox = check(id=self.checkboxID).on("click", self.set_value)
-            
-            label(
-                usefor=self.checkbox.id,
-                value=self.label
-            )
+            self.checkbox = check(id=self.checkboxID, value=value).on("click", self.set_value)
+            label(usefor=self.checkbox.id, value=self.label)
 
     def set_value(self, ctx, id, value):
         self.checkbox.value = value
         if self.callback:
             self.callback(ctx,id, value)
-
 
 title = "Basic Checkbox"
 

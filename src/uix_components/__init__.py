@@ -15,3 +15,4 @@ from ._image_viewer._image_viewer import image_viewer
 from ._basic_tree_view._basic_tree_view import basic_tree_view
 from ._chart._chart import chart
 from ._button_group._button_group import button_group
+from ._address_form._address_form import address_form
