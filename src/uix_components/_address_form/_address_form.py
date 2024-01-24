@@ -17,11 +17,11 @@ class address_form(uix.Element):
         with div().cls("adress_form.css"):
             with form(id="myForm").cls("form-content").on("submit", self.add_address):
                 with col().cls("address-grid"):
-                    self.name = input(placeholder="Name", required=True).on("change", self.input_setter)
+                    self.name = input(name="FirstName", placeholder="Name", required=True).on("change", self.input_setter)
                 with col().cls("address-grid"):
-                    self.surname = input(placeholder="Surname", required=True).on("change", self.input_setter)
+                    self.surname = input(name="LastName", placeholder="Surname", required=True).on("change", self.input_setter)
                 with col().cls("address-grid"):
-                    self.phone = input(type="tel", placeholder="Phone", required=True).on("change", self.input_setter)
+                    self.phone = input(name="Phone", type="tel", placeholder="Phone", required=True).on("change", self.input_setter)
                 with col().cls("address-grid"):
                     options = {"Select Country": "Select Country", **{country['code']: country['name'] for country in self.countries}}
                     self.country = basic_datalist(name="", id="countries", options=options, placeholder="Select Country", required=True, callback=self.get_options)
@@ -29,9 +29,9 @@ class address_form(uix.Element):
                     self.hiddenAddress = hiddenAddress
                     with row().style("height", "max-content"):
                         options_city = {key: key for key in self.address_data}
-                        self.city = basic_datalist(name="", id="cities", options = options_city, placeholder="Select City", callback=self.get_counties)                   
+                        self.city = basic_datalist(name="", id="cities", options = options_city, placeholder="Select City", callback=self.get_counties).style("width", "100%")                  
                         options_county = {"Select County": "Select County"}
-                        self.counties = basic_datalist(name="", id="counties", options=options_county, placeholder="Select County", callback=self.get_neighborhoods)                      
+                        self.counties = basic_datalist(name="", id="counties", options=options_county, placeholder="Select County", callback=self.get_neighborhoods).style("width", "100%")                      
                     with row().style("height", "max-content"):
                         options_neighborhoods = {"Select Neighborhood": "Select Neighborhood"}
                         self.neighborhoods = basic_datalist(name="",id="neighborhoods",options=options_neighborhoods, placeholder="Select Neighborhood" ,callback=self.set_neighborhoods)
@@ -46,11 +46,11 @@ class address_form(uix.Element):
                 with col(id="corporate").cls("hidden adress-grid") as corporate:
                     self.corporate = corporate           
                     with row().style("height", "max-content"):
-                        self.vkn = input(placeholder="VKN *").on("change", self.input_setter)
-                        self.companyName = input(placeholder="Company Name *").on("change", self.input_setter)
+                        self.vkn = input(placeholder="VKN").on("change", self.input_setter)
+                        self.companyName = input(placeholder="Company Name").on("change", self.input_setter)
                     with row().style("height", "max-content"):
                         self.taxOffice = input(placeholder="Tax Office").on("change", self.input_setter)
-                        self.eFatura = basic_checkbox(id="efatura", label_text="E-Fatura Mükellefiyim", value=True).cls("eFatura-checkbox")
+                        self.eFatura = basic_checkbox(id="efatura", label_text="E-Fatura Mükellefiyim").cls("eFatura-checkbox")
                 with row().cls("address-grid").style("height", "max-content"):
                     button("Add Billing Address", type="submit").cls("save-button")
 
@@ -134,22 +134,21 @@ class address_form(uix.Element):
         self.neighborhoods.value = value
         
     def add_address(self, ctx, id, value):
-        #create a dictionary for address form data
-        address_form_data = {}
-        address_form_data["name"] = self.name.value
-        address_form_data["surname"] = self.surname.value
-        address_form_data["phone"] = self.phone.value
-        address_form_data["country"] = self.country.value
-        address_form_data["city"] = self.city.value
-        address_form_data["county"] = self.counties.value
-        address_form_data["neighborhood"] = self.neighborhoods.value
-        address_form_data["address"] = self.address.value
-        address_form_data["addressTitle"] = self.addressTitle.value
-        address_form_data["vkn"] = self.vkn.value
-        address_form_data["companyName"] = self.companyName.value
-        address_form_data["taxOffice"] = self.taxOffice.value
-        address_form_data["eFatura"] = self.eFatura.checkbox.value
-        #call the callback function
+        address_form_data = {
+            "name": self.name.value,
+            "surname": self.surname.value,
+            "phone": self.phone.value,
+            "country": self.country.value,
+            "city": self.city.value,
+            "county": self.counties.value,
+            "neighborhood": self.neighborhoods.value,
+            "address": self.address.value,
+            "addressTitle": self.addressTitle.value,
+            "vkn": self.vkn.value,
+            "companyName": self.companyName.value,
+            "taxOffice": self.taxOffice.value,
+            "eFatura": self.eFatura.checkbox.value
+        }
         if self.callback:
             self.callback(self, ctx, id, address_form_data)
 
