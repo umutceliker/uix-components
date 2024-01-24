@@ -15,4 +15,5 @@ from ._image_viewer._image_viewer import image_viewer
 from ._basic_tree_view._basic_tree_view import basic_tree_view
 from ._chart._chart import chart
 from ._address_form._address_form import address_form
+from ._fabric._fabric import fabric
 
