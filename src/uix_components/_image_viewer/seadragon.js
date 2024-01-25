@@ -8,13 +8,13 @@ event_handlers["init-seadragon"] = function (id, value, event_name) {
         maxZoomPixelRatio: 4,
         tileSources : {"type": "image","url": config.image},
         showNavigationControl: true,
+
     };
 
     document.getElementById(id).viewerConfig = config.buttonGroup;
     document.getElementById(id).viewer = OpenSeadragon(viewerConfig);
 
    let viewer = document.getElementById(id).viewer;
-
 createIcons(viewer,config.buttonGroup);
 }
 
@@ -28,6 +28,8 @@ function createIcons(viewer,config) {
         buttonGroupElement.removeChild(buttonGroupElement.firstChild);
     }
     viewer.buttonGroup.element.innerHTML = "";
+    viewer.buttonGroup.element.style.display = "flex";
+    viewer.buttonGroup.element.style.flexDirection = "row";
 
     buttons = config
     // for (const [key, value] of Object.entries(buttons)) {
@@ -58,6 +60,9 @@ function createIcon(id, name, value, iconClasses) {
     const padding = "5px";
     const backgroundColor = "var(--background-mask)";
     const backgroundBlur = "blur(5px)";
+    const display = "flex";
+    const justifyContent = "center";
+    const alignItems = "center";
 
     button_click = function (event) {
         clientEmit(id, name, "button_click");
@@ -73,11 +78,17 @@ function createIcon(id, name, value, iconClasses) {
     button.element.style.padding = padding;
     button.element.style.backgroundColor = backgroundColor;
     button.element.style.backgroundBlur = backgroundBlur;
+    button.element.style.display = display;
+    button.element.style.justifyContent = justifyContent;
+    button.element.style.alignItems = alignItems;
 
     const iconElement = document.createElement('i');
-    iconElement.classList.add('fas'); 
-    iconElement.classList.add(value.icon)// Add FontAwesome base class
+    iconElement.classList.add('fas'); // Add FontAwesome base class
     
+    iconClasses.split(' ').forEach(iconClass => {
+        iconElement.classList.add(iconClass);
+        console.log("iconClass", iconClass)
+    });
     
     if (value.icon_styles){
         applyStyles(iconElement, value.icon_styles);
@@ -89,7 +100,6 @@ function createIcon(id, name, value, iconClasses) {
     
     return button;
 }
-
 function clearButtonGroupElements(button) {
 
    console.log("clearButtonGroupElements", button)
