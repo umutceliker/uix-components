@@ -1,6 +1,6 @@
 event_handlers["init-seadragon"] = function (id, value, event_name) {
     let config = value
-    console.log("init-seadragon", id, config.buttonGroup, event_name);
+
     let viewerConfig = {
         id: id,
         prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
@@ -8,20 +8,17 @@ event_handlers["init-seadragon"] = function (id, value, event_name) {
         maxZoomPixelRatio: 4,
         tileSources : {"type": "image","url": config.image},
         showNavigationControl: true,
-
+        
     };
 
     document.getElementById(id).viewerConfig = config.buttonGroup;
     document.getElementById(id).viewer = OpenSeadragon(viewerConfig);
-
    let viewer = document.getElementById(id).viewer;
+
 createIcons(viewer,config.buttonGroup);
 }
 
 function createIcons(viewer,config) {
-    console.log("create icons")
-    
-    console.log("create icons", config)
     viewer.buttonGroup.buttons = [];
     const buttonGroupElement = viewer.buttonGroup.element;
     while (buttonGroupElement.firstChild) {
@@ -32,11 +29,8 @@ function createIcons(viewer,config) {
     viewer.buttonGroup.element.style.flexDirection = "row";
 
     buttons = config
-    // for (const [key, value] of Object.entries(buttons)) {
-    //     console.log(key, value);
-    //   }
+
     for (const [key, value] of Object.entries(buttons)) {
-        console.log(key, value, "create icons");
         let button = createIcon(viewer.id, key, value, value.icon);
     
         viewer.buttonGroup.buttons.push(button);
@@ -63,13 +57,18 @@ function createIcon(id, name, value, iconClasses) {
     const display = "flex";
     const justifyContent = "center";
     const alignItems = "center";
-
+    image_url = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/webfonts/fa-solid-900.svg"
+    
     button_click = function (event) {
         clientEmit(id, name, "button_click");
     }
 
     let button = new OpenSeadragon.Button({
         tooltip: name,
+        srcRest: image_url,
+        srcGroup: image_url,
+        srcHover: image_url,
+        srcDown: image_url,
         onClick: button_click,
     });
 
@@ -87,7 +86,6 @@ function createIcon(id, name, value, iconClasses) {
     
     iconClasses.split(' ').forEach(iconClass => {
         iconElement.classList.add(iconClass);
-        console.log("iconClass", iconClass)
     });
     
     if (value.icon_styles){
@@ -101,14 +99,11 @@ function createIcon(id, name, value, iconClasses) {
     return button;
 }
 function clearButtonGroupElements(button) {
-
-   console.log("clearButtonGroupElements", button)
     const buttonGroupElement = button.element;
     while (buttonGroupElement.firstChild) {
         buttonGroupElement.removeChild(buttonGroupElement.firstChild);
     }
 
-    console.log("clearButtonGroupElements5", button)
 }
 
 event_handlers["seadragon"] = function (id, command, event_name) {
