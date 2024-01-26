@@ -7,16 +7,17 @@ icons_path = os.path.join(os.path.dirname(__file__), "icons")
 uix.app.add_static_route("image_viewer",icons_path)
 print("image_viewer:",icons_path)
 class image_viewer(uix.Element):
-    def __init__(self, id = None, value=None, hasButtons=True, zoom=False, size=(500,500)):
+    def __init__(self, id = None, value=None, buttonGroup={}, zoom=False, size=(500,500)):
         super().__init__(id=id, value=value)
         self.tag = "div"
         self.value_name = None
-        self.hasButtons = hasButtons
+        self.buttonGroup = buttonGroup
+     
         self.config = {
-            "hasButtons": hasButtons,
+            "buttonGroup": buttonGroup,
             "zoom":  zoom,
             "image": value,
-            "prefixUrl":  "image_viewer/"
+            "prefixUrl":  "image_viewer/",
         }
         if size is not None and len(size) == 2:
             self.size(*size)
