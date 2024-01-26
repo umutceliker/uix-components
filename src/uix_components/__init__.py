@@ -1,6 +1,5 @@
 from ._basic_slider._basic_slider import basic_slider
 from ._component_list._component_list import component_list
-
 from ._basic_checkbox._basic_checkbox import basic_checkbox
 from ._basic_select._basic_select import basic_select
 from ._basic_dialog._basic_dialog import basic_dialog
@@ -14,7 +13,7 @@ from ._credit_card._credit_card import credit_card
 from ._image_viewer._image_viewer import image_viewer
 from ._basic_tree_view._basic_tree_view import basic_tree_view
 from ._chart._chart import chart
+from ._tooltip._tooltip import tooltip
 from ._button_group._button_group import button_group
 from ._address_form._address_form import address_form
 from ._fabric._fabric import fabric
-
