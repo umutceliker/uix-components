@@ -33,19 +33,20 @@ uix.html.add_css("imagecard-css",""".card {
 }
 
 .from-bottom {
-    top: 100%;
     left: 0;
-    height: 100%;
+    height: fit-content;
     position: absolute;
     transition: 0.2s;
     width: 100%;
+    bottom: -100%;
 }
 
 .card:hover .content .from-bottom {
     position: absolute;
     width: 100%;
     background-color: rgba(0, 0, 0, .65);
-    top: 80%;
+    bottom: 0%;
+    height: fit-content;
 }
 """)
 
@@ -61,6 +62,6 @@ class basic_imagecard(uix.Element):
         with self:
             with div().cls("card wall hall"):
                 with div().cls("content"):
-                    image(value=imagesrc, id=id + "-image").cls("image")
+                    image(value=imagesrc).cls("image")
                     with div().cls("from-bottom"):
                         text(self.textstr)
