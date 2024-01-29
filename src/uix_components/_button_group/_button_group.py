@@ -17,8 +17,8 @@ class button_group(row):
                 row_styles = value.get("row_styles", {})
                 for row_style_key, row_style_value in row_styles.items():
                     self.style(row_style_key, row_style_value)
-                btn_classes = value.get("btn_classes")
-                self.cls(btn_classes)
+                row_classes = value.get("row_classes")
+                self.cls(row_classes)
 
                 with button("").cls("btn-group").on("click", value.get("onClick")) as btn:
                     btn_styles = value.get("btn_styles", {})
