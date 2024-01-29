@@ -9,11 +9,11 @@ class basic_details(uix.Element):
         self.cls("border")
         self.style("width","100%")
         with self:
-            with details():
+            with details().cls("default square"):
                 text(label_).tag="summary"
-            if acc_elements:
-                for element in acc_elements:
-                    with div().cls("details_acc"):
+                if acc_elements:
+                    for element in acc_elements:
+                        with div().cls("details_acc"):
                             element()
         
 
