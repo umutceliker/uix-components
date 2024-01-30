@@ -5,6 +5,7 @@ import io
 import uix
 from uix.elements import row, col, input, button, textarea, form, div
 from uix_components import basic_checkbox, basic_datalist
+from uix import T
 
 uix.html.add_css_file("_address_form.css",__file__)
 
@@ -17,40 +18,40 @@ class address_form(uix.Element):
         with div().cls("adress_form.css"):
             with form(id="myForm").cls("form-content").on("submit", self.add_address):
                 with col().cls("address-grid"):
-                    self.name = input(name="FirstName", placeholder="Name", required=True).on("change", self.input_setter)
+                    self.name = input(name="FirstName", placeholder=T("Name"), required=True).on("change", self.input_setter)
                 with col().cls("address-grid"):
-                    self.surname = input(name="LastName", placeholder="Surname", required=True).on("change", self.input_setter)
+                    self.surname = input(name="LastName", placeholder=T("Surname"), required=True).on("change", self.input_setter)
                 with col().cls("address-grid"):
-                    self.phone = input(name="Phone", type="tel", placeholder="Phone", required=True).on("change", self.input_setter)
+                    self.phone = input(name="Phone", type="tel", placeholder=T("Phone"), required=True).on("change", self.input_setter)
                 with col().cls("address-grid"):
-                    options = {"Select Country": "Select Country", **{country['code']: country['name'] for country in self.countries}}
-                    self.country = basic_datalist(name="", id="countries", options=options, placeholder="Select Country", required=True, callback=self.get_options)
+                    options = {T("Select Country"): T("Select Country"), **{country['code']: country['name'] for country in self.countries}}
+                    self.country = basic_datalist(name="", id="countries", options=options, placeholder=T("Select Country"), required=True, callback=self.get_options)
                 with col(id="hiddenAddress").cls("hidden address-grid") as hiddenAddress:
                     self.hiddenAddress = hiddenAddress
                     with row().style("height", "max-content"):
                         options_city = {key: key for key in self.address_data}
-                        self.city = basic_datalist(name="", id="cities", options = options_city, placeholder="Select City", callback=self.get_counties).style("width", "100%")                  
+                        self.city = basic_datalist(name="", id="cities", options = options_city, placeholder=T("Select City"), callback=self.get_counties).style("width", "100%")                  
                         options_county = {"Select County": "Select County"}
-                        self.counties = basic_datalist(name="", id="counties", options=options_county, placeholder="Select County", callback=self.get_neighborhoods).style("width", "100%")                      
+                        self.counties = basic_datalist(name="", id="counties", options=options_county, placeholder=T("Select County"), callback=self.get_neighborhoods).style("width", "100%")                      
                     with row().style("height", "max-content"):
-                        options_neighborhoods = {"Select Neighborhood": "Select Neighborhood"}
-                        self.neighborhoods = basic_datalist(name="",id="neighborhoods",options=options_neighborhoods, placeholder="Select Neighborhood" ,callback=self.set_neighborhoods)
+                        options_neighborhoods = {T("Select Neighborhood"): T("Select Neighborhood")}
+                        self.neighborhoods = basic_datalist(name="",id="neighborhoods",options=options_neighborhoods, placeholder=T("Select Neighborhood") ,callback=self.set_neighborhoods)
                         self.neighborhoods.style("width","100%")
                 with col().cls("address-grid"):
-                    self.address = textarea(placeholder="Address", required=True).style("height","90px").on("change", self.input_setter)
+                    self.address = textarea(placeholder=T("Address"), required=True).style("height","90px").on("change", self.input_setter)
                 with col().cls("address-grid"):
-                    self.addressTitle = input(placeholder="Address Title", required=True).on("change", self.input_setter)
+                    self.addressTitle = input(placeholder=T("Address Title"), required=True).on("change", self.input_setter)
                 with row().cls("address-grid"):
-                    self.personalButton = button("Personal").cls("personal-button").on("click", self.personal_click)
-                    self.corporateButton = button("Corporate").cls("cancel-button").on("click", self.corporate_click)
+                    self.personalButton = button(T("Personal")).cls("personal-button").on("click", self.personal_click)
+                    self.corporateButton = button(T("Corporate")).cls("cancel-button").on("click", self.corporate_click)
                 with col(id="corporate").cls("hidden adress-grid") as corporate:
                     self.corporate = corporate           
                     with row().style("height", "max-content"):
-                        self.vkn = input(placeholder="VKN").on("change", self.input_setter)
-                        self.companyName = input(placeholder="Company Name").on("change", self.input_setter)
+                        self.vkn = input(placeholder=T("Tax Number")).on("change", self.input_setter)
+                        self.companyName = input(placeholder=T("Company Name")).on("change", self.input_setter)
                     with row().style("height", "max-content"):
-                        self.taxOffice = input(placeholder="Tax Office").on("change", self.input_setter)
-                        self.eFatura = basic_checkbox(id="efatura", label_text="E-Fatura Mükellefiyim").cls("eFatura-checkbox")
+                        self.taxOffice = input(placeholder=T("Tax Office")).on("change", self.input_setter)
+                        self.eFatura = basic_checkbox(id="efatura", label_text="E-Fatura Mükellefiyim").cls("eFatura-checkbox").style("display", "none")
                 with row().cls("address-grid").style("height", "max-content"):
                     button("Add Billing Address", type="submit").cls("save-button")
 
@@ -95,19 +96,23 @@ class address_form(uix.Element):
     def get_options(self, ctx, id, value):
         if value != "Türkiye":
             self.hiddenAddress.classes = ['col', 'hidden']
+            self.eFatura.style("display", "none")
             self.city.input.attrs["required"] = False
             self.counties.input.attrs["required"] = False
             self.neighborhoods.input.attrs["required"] = False
             self.hiddenAddress.update()
+            self.corporate.update()
             self.datalist_setter(self.country, value)
         else:
             self.hiddenAddress.classes = ['col', 'address-grid']
             self.hiddenAddress.remove_class("hidden")
+            self.eFatura.style("display", "flex")
             self.hiddenAddress.style("gap", "10px")
             self.city.input.attrs["required"] = True
             self.counties.input.attrs["required"] = True
             self.neighborhoods.input.attrs["required"] = True
             self.hiddenAddress.update()
+            self.corporate.update()
             self.datalist_setter(self.country, value)
 
     def get_counties(self, ctx, id, value):
@@ -117,7 +122,7 @@ class address_form(uix.Element):
         content = ctx.elements["counties"]
         self.datalist_setter(self.city,value)
         with content:
-            self.counties = basic_datalist(name="", id="counties", placeholder="Select County", required=True, options=countiesData, callback=self.get_neighborhoods)
+            self.counties = basic_datalist(name="", id="counties", placeholder=T("Select County"), required=True, options=countiesData, callback=self.get_neighborhoods)
         content.update()
         
     def get_neighborhoods(self, ctx, id, value):
@@ -127,7 +132,7 @@ class address_form(uix.Element):
             content = ctx.elements["neighborhoods"]
             self.datalist_setter(self.counties,value)
             with content:
-                self.neighborhoods = basic_datalist(name="", id="neighborhoods", placeholder="Select Neighborhood", required=True, options=neighborhoodsData, callback=self.set_neighborhoods).style("width","100%")
+                self.neighborhoods = basic_datalist(name="", id="neighborhoods", placeholder=T("Select Neighborhood"), required=True, options=neighborhoodsData, callback=self.set_neighborhoods).style("width","100%")
             content.update()
 
     def set_neighborhoods(self, ctx, id, value):
