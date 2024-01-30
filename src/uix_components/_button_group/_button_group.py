@@ -1,4 +1,4 @@
-from uix.elements import row, button, icon, text
+from uix.elements import row, button, icon, text, link
 import uix
 
 uix.html.add_css_file("_button_group.css",__file__)
@@ -20,7 +20,8 @@ class button_group(row):
                 row_classes = value.get("row_classes")
                 self.cls(row_classes)
 
-                with button("").cls("btn-group").on("click", value.get("onClick")) as btn:
+                btn_id = value.get("btn_id")
+                with button("",id=btn_id).cls("btn-group").on("click", value.get("onClick")) as btn:
                     btn_styles = value.get("btn_styles", {})
                     for style_key, style_value in btn_styles.items():
                         btn.style(style_key, style_value)

@@ -3,7 +3,6 @@ import uix
 from uix.elements import text, image, div
 
 uix.html.add_css("imagecard-css",""".card {
-    width: auto;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     padding: 5px;
     text-align: center;
