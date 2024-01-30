@@ -1,7 +1,6 @@
 import uix
-import numpy as np
-from uix.elements import canvas,button,row
-from uix_components._chart_bar.chart_utils import ChartUtils
+from uix.elements import canvas
+from uix_components._chart_line.chart_line_utils import ChartUtils
 
 uix.html.add_script("chart-js","""
     event_handlers["init-chart"] = function (id, value, event_name) {
@@ -12,7 +11,7 @@ uix.html.add_script("chart-js","""
     };
 """,False)
 
-class chart_bar(uix.Element):
+class chart_line(uix.Element):
     def __init__(self, id, value=None, labels=None, options=None):
         super().__init__(id=id, value=value)
         self._value = value
@@ -22,7 +21,7 @@ class chart_bar(uix.Element):
         self.canvas_id = id+"_canvas"
 
         self.chartData ={
-            "type": "bar",
+            "type": "line",
             "data": {
                 "labels": [],
                 
@@ -59,15 +58,15 @@ class chart_bar(uix.Element):
     @value.setter
     def value(self, value):
         ChartUtils.dataset_importer(self.chartData, value, self.labels)
+        ChartUtils.set_options(self.chartData, self.options)
         with self:
             self.canvas = canvas(id=self.canvas_id,value = self.chartData)
         self.update()
 
-title = "Chart Bar"
+title = "Chart Line"
 description = """
-# chart_bar(id, value=None, labels=None, options=None)
-
-1. Chart Bar bir chart komponentidir.
+# chart_line(id, value=None, labels=None, options=None)
+1. Chart Line bir chart komponentidir.
     | attr          | desc                                                              |
     | :------------ | :---------------------------------------------------------------  |
     | id            | Komponentin id'si                                                 |
@@ -81,6 +80,7 @@ description = """
         "responsive" : True,    #Pencere boyutu değiştiğinde chart'ın yeniden boyutlandırılması
         "legend_pos" : "Top",   #Grafikte görünen veri kümlerinin açıklamalarının konumu(örn: 1.Dataset)
         "title" : "2024"        #Grafik başlığı
+        "tension" : 0.4         #Çizgilerin eğimini ayarlar
         }
 ```
 ```python
@@ -101,13 +101,14 @@ sample="""
 import uix
 import numpy as np
 from uix.elements import button,row
-from uix_components import chart_bar
+from uix_components import chart_line
+from uix_components._chart_line._chart_line import title, description, sample as code
 
-dict1 = {'2010':10, '2011':20, '2012':15, '2013':25, '2014':22, '2015':30, '2016':28,}
+dict1 = {'2010':10, '2011':20, '2012':15, '2013':25, '2014':22, '2015':30, '2016':28}
 
 dict2 = {
-    'data1': {'2010':20, '2011':30, '2012':25, '2013':35, '2014':32, '2015':40, '2016':38},
-    'data2':{'2010':30, '2011':40, '2012':35, '2013':45, '2014':42, '2015':50, '2016':48}
+    'data1': {'2010':15, '2011':65, '2012':34, '2013':53, '2014':32, '2015':44, '2016':38},
+    'data2':{'2010':12, '2011':41, '2012':25, '2013':16, '2014':52, '2015':32, '2016':28}
 }   
 
 tupple1 = (1, 2, 3, 4, 5)
@@ -117,7 +118,7 @@ tupple3 = ((1, 2, 3, 4, 5), (6, 7, 8, 9, 10),(3,6,3,7,3))
 list1 = [1, 2, 3, 4, 5]
 list2 = [[1, 2, 3, 4, 5], [6, 7, 8, 9, 10],[3,6,3,7,3]]
 list3 = [(1, 2, 3, 4, 5), (6, 7, 8, 9, 10),(3,6,3,7,3)]
-list4 = np.random.randint(0,100,1000).tolist()
+list4 = np.random.randint(0,100,100).tolist()
 
 label1 = ["ocak","şubat","mart","nisan","mayıs","haziran","temmuz","ağustos","eylül","ekim","kasım","aralık"]
 
@@ -125,6 +126,7 @@ options = {
     "responsive": True,
     "legend_pos": "top",
     "title": "Burası Başlık",
+    "tension": 0.2,
 }
 
 charts = [dict1,dict2,tupple1,tupple2,tupple3,list1,list2,list3,list4]
@@ -135,10 +137,10 @@ def update(ctx,id,value):
     chart_index = int(id[-1:])
     ctx.elements["chart1"].value = charts[chart_index]
 
-def chart_bar_example():
+def chart_line_example():
     with uix.elements.border().size("100%","fit-content").style("overflow-y","auto") as main:
         with row().size("100%","50px").style("gap","10px"):
             for i in range(len(button_value)):
                 button(id = f"btn_0{i}", value = button_value[i]).on("click", update)
-        chart_bar(id = "chart1", value=charts[chart_index], options=options).size("90%","90%").cls("border")
+        chart_line(id = "chart1", value=charts[chart_index], options=options).size("90%","90%").cls("border")
 """
