@@ -1,33 +1,36 @@
 
+:root {
+  --transition-duration: 0.6s;
+  --expanded-height: 800px;
+  --collapsed-height: 100px;
+  --border-radius: 4px;
+}
+
+details {
+
+  cursor: pointer;
+  transition: all calc(var(--transition-duration) / 2) linear;
+  min-height: 30px;
+  max-height: var(--collapsed-height);
+  overflow: hidden;
+  will-change: height;
+}
+
+details + details {
+  margin-top: 10px;
+}
 
 
+details[open] {
+  transition: all var(--transition-duration) linear;
+  min-height: 100px;
+  max-height: var(--expanded-height);
+  will-change: height;
+}
 
 summary {
-  display: block;
+  outline: none;
+  font-size: 16px;
+  padding: 10px;
   background-color: var(--ait);
-  padding: 5px;
-  border-radius: 3px;
-  margin: 5px;
-}
-
-summary::-webkit-details-marker {
-  display: none;
-}
-
-
-.details_acc {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  box-sizing: border-box;
-  width: 100%;
-  max-height: 0;
-  overflow: hidden;
-  padding: 0 10px;
-  transition: max-height 500ms ease-out, border 0ms linear;
-}
-
-details[open] + .details_acc {
-  max-height: 1000px;
-  transition: max-height 500ms ease-in-out, border 0ms linear;
 }
