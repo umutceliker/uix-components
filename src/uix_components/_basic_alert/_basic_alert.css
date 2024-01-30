@@ -1,4 +1,4 @@
-.alert{
+.alert {
     z-index: 9999;
     width: 300px;
     height: fit-content;
@@ -7,59 +7,81 @@
     border-radius: 5px;
     margin: 10px;
     font-size: 20px;
-    position:absolute;
+    position: absolute;
     bottom: 0px;
-    right: 0;
+    right: 0px;
     display: flex;
-    visibility: hidden;
     word-wrap: break-word;
     align-items: flex-start;
+    height: fit-content;
+    flex-direction: column;
+    gap: 10px;
 }
 
+.alert-child {
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    position: relative;
+    cursor: pointer;
+}
 
-@keyframes alert-open {
-    0%, 90% {
-                bottom: -200px;
-            }
-    10%, 80% {
-                bottom: 0px;
-            }
-    99% {
-                visibility: hidden;
-                bottom: -200px;
-            }
+.alert-child:hover {
+    animation-play-state: paused;
+    cursor: pointer;
+}
+
+.alert-child:hover .alert-progress {
+    animation-play-state: paused;
+    cursor: pointer;
+}
+
+@keyframes alert-animation {
+    79% {
+        opacity: 1;
+        visibility: visible;
+    }
+    80% {
+        opacity: 0.3;
+    }
     100% {
-                visibility: hidden;
-                bottom: 0px;
-            }
+        opacity: 0;
+        visibility: hidden;
+    }
 }
 
-@keyframes alert-close {
+@keyframes progress-animation {
     0% {
-                bottom: 0px;
-            }
-    10%, 99% {
-                visibility: hidden;
-                bottom: -200px;
-                }
+        width: 0%;
+    }
     100% {
-                visibility: hidden;
-                bottom: 0px;
-            }
-}
-            
-.alert-start {
-                        visibility: visible;
-                        animation: alert-open 5000ms ease-in-out forwards;            
+        width: 100%;
+    }
 }
 
-.alert-start:hover {
-                        animation-play-state: paused;
+.alert-progress {
+    width: 100%;
+    height: 5px;
+    background-color: whitesmoke;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    animation: progress-animation 5s ease-in-out;
 }
 
-.alert-end {
-                        visibility: visible;
-                        animation: alert-close 5000ms ease-in-out forwards;
+.alert-close {
+    animation: alert-animation 6s ease-in-out;
+}
+
+.alert-close {
+    animation-play-state: running;
+    animation: alert-animation 6s ease-in-out;
 }
 
 .alert-normal {
