@@ -1,4 +1,4 @@
-.row-section {
+.row-group {
     width: fit-content !important;
     padding: 5px;
     background-color: rgba(0, 0, 0, 0.8);
@@ -8,12 +8,13 @@
     gap: 5px;
 }
 
-.btn-section {
+.btn-group {
     padding: 1px;
     background-color: transparent;
     cursor: pointer;
-    min-width: 20px; 
-  }
+    border: none;
+    min-width: 0px !important; 
+}
 
 .fa-icon{
     font-size: 20px;

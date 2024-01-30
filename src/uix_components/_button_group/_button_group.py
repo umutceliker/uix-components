@@ -10,17 +10,22 @@ class button_group(row):
             **kwargs):
         super().__init__( id=id  ,**kwargs)
 
-        self.cls("row-section")
+        self.cls("row-group")
+        self.style("width","fit-content !important")
         with self:
             for key, value in items.items():
                 row_styles = value.get("row_styles", {})
                 for row_style_key, row_style_value in row_styles.items():
                     self.style(row_style_key, row_style_value)
+                row_classes = value.get("row_classes")
+                self.cls(row_classes)
 
-                with button("").cls("btn-section").on("click", value.get("onClick")) as btn:
+                with button("").cls("btn-group").on("click", value.get("onClick")) as btn:
                     btn_styles = value.get("btn_styles", {})
                     for style_key, style_value in btn_styles.items():
                         btn.style(style_key, style_value)
+                    btn_classes = value.get("btn_classes")
+                    btn.cls(btn_classes)
 
                     if value.get("icon") is not None:
                         with icon(value=value.get("icon")).cls("fa-icon") as icons:
@@ -33,20 +38,25 @@ class button_group(row):
                             text_styles = value.get("text_styles", {})
                             for text_style_key, text_style_value in text_styles.items():
                                 texts.style(text_style_key, text_style_value)
+                            text_classes = value.get("text_classes")
+                            texts.cls(text_classes)
 
 title = "Button Group"
 description = """
  # button_section(id, items)
- 1. Button Section bir button komponentidir.
+ 1. Button Section bir button komponentidir. Style'lar dict, class'lar string olarak verilir.
     | attr          | desc                                                            |
     | :------------ | :-----------------------------------------------------          |
     | id            | Komponentin id'si                                               |
     | items         | Komponentin içindeki iconların dict olarak verilmesi gerekiyor. |
     | onClick       | Komponentin değeri değiştiğinde çalışacak fonksiyon             |
+    | row_classes   | Komponentin içine row class tanımlamak için kullanılır.         |
     | row_styles    | Komponentin içine row style tanımlamak için kullanılır.         |
     | icon_styles   | Komponentin içine icon style tanımlamak için kullanılır.        |
+    | btn_classes   | Komponentin içine button class tanımlamak için kullanılır.      |
     | btn_styles    | Komponentin içine button style tanımlamak için kullanılır.      |
     | text_styles   | Komponentin içine text style tanımlamak için kullanılır.        |
+    | text_classes  | Komponentin içine text class tanımlamak için kullanılır.        |
 """
 sample="""
 from uix_components import button_section
