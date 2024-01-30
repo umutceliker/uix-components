@@ -1,34 +1,51 @@
 import uix
-from uix.elements import text
+from uix.elements import text, div
 
 uix.html.add_css_file("_basic_alert.css",__file__)
+
+uix.html.add_script("_basic_alert.js","""
+event_handlers["alert-open"] = function(id, value, event_name){
+    var alertContainer = document.getElementById("comp_alert");
+
+    var alertDiv = document.createElement("div");
+    alertDiv.className = value.type + " alert-child alert-close";
+    alertDiv.textContent = value.message;
+                    
+    const progressBar = document.createElement("div");
+                    
+    progressBar.className = "alert-progress";
+    alertDiv.appendChild(progressBar);
+                    
+    if(value.icon != null){
+        const icon = document.createElement("i");
+        icon.className = value.icon;
+        alertDiv.appendChild(icon);
+    }
+
+    alertContainer.appendChild(alertDiv);
+
+    alertDiv.addEventListener("animationend", function(){
+        alertContainer.removeChild(alertDiv);
+    });             
+}
+                    
+    """, beforeMain=False)
 
 class basic_alert(uix.Element):
     def __init__(self, value=None, id=None, type="normal"):
         super().__init__(value, id=id)
 
-        self.type = type
-        self.current_type = "alert-normal"
+        self.cls("alert")
 
-        with self.cls("alert container" + self.current_type).on("click", self.close):
-            self.text = text(value=self.value, id=self.id + "_text")
-        
-    def setBaseStyle(self):
-        self.classes = ["alert" , "container"]
+    def open(self, type, value, icon=None):
+        opt = {
+            "type": type,
+            "message": value,
+            "icon": icon
+        }
+        self.session.send(self.id, opt, "alert-open")
 
-    def close(self, ctx, id, value):
-        self.setBaseStyle()
-        self.cls("alert-end")
-        self.current_type = self.type
-        self.update()
 
-    def open(self, type, message):
-        self.setBaseStyle()
-        self.current_type = type
-        self.cls(self.current_type)
-        self.text.value = message
-        self.cls("alert-start")
-        self.update()
 
 title = "Basic Alert"
 
