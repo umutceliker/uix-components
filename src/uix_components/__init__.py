@@ -21,3 +21,4 @@ from ._toggle_checkbox._toggle_checkbox import toggle_checkbox
 from ._chart_bar._chart_bar import chart_bar
 from ._chart_line._chart_line import chart_line
 from ._chart_scatter._chart_scatter import chart_scatter
+from ._chart_pie._chart_pie import chart_pie
