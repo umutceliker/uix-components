@@ -18,3 +18,4 @@ from ._button_group._button_group import button_group
 from ._address_form._address_form import address_form
 from ._fabric._fabric import fabric
 from ._toggle_checkbox._toggle_checkbox import toggle_checkbox
+from ._chart_bar._chart_bar import chart_bar
