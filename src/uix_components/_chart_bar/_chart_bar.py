@@ -11,7 +11,6 @@ uix.html.add_script("chart-js","""
         elm.chart = chart;
     };
 """,False)
-uix.html.add_script_source(id='_chart-js', script='_chart_bar.js',localpath=__file__, beforeMain=False)
 
 class chart_bar(uix.Element):
     def __init__(self, id, value=None, labels=None, options=None):
