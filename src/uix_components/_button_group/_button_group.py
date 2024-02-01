@@ -1,4 +1,4 @@
-from uix.elements import row, button, icon, text, link
+from uix.elements import row, button, icon, text
 import uix
 
 uix.html.add_css_file("_button_group.css",__file__)
@@ -11,7 +11,7 @@ class button_group(row):
         super().__init__( id=id  ,**kwargs)
 
         self.cls("row-group")
-        self.style("width","fit-content !important")
+        self.style("width","fit-content !important").style("display","flex")
         with self:
             for key, value in items.items():
                 row_styles = value.get("row_styles", {})
@@ -42,6 +42,15 @@ class button_group(row):
                             text_classes = value.get("text_classes")
                             texts.cls(text_classes)
 
+    def hide(self):
+        self.set_style("display","none")
+        print("hide")
+        
+    def show(self):
+        self.set_style("display","flex")
+        print("show")
+        
+
 title = "Button Group"
 description = """
  # button_section(id, items)
@@ -56,6 +65,7 @@ description = """
     | icon_styles   | Komponentin içine icon style tanımlamak için kullanılır.        |
     | btn_classes   | Komponentin içine button class tanımlamak için kullanılır.      |
     | btn_styles    | Komponentin içine button style tanımlamak için kullanılır.      |
+    | btn_id        | Komponentin içine button id tanımlamak için kullanılır.         |
     | text_styles   | Komponentin içine text style tanımlamak için kullanılır.        |
     | text_classes  | Komponentin içine text class tanımlamak için kullanılır.        |
 """
