@@ -33,9 +33,12 @@ class basic_slider(uix.Element):
         with self:
             with row().cls("wall hall").style("justify-content","space-between"):
                 text(name)
-                self.input=input(type="number", id = self.inputID, value = value).style("width","30px;").on("change", self.on_slider_change)
+                self.input=input(type="number", id = self.inputID, value = value).style("width","30px;").on("input", self.on_slider_change)
+                self.input.attr("min",min)
+                self.input.attr("max",max)
+                self.input.attr("step",step)
             with row():
-                self.slider=slider(id = self.sliderID, min=min, max=max, value=value, step=step).on("change", self.on_slider_change).style("width","100%")
+                self.slider=slider(id = self.sliderID, min=min, max=max, value=value, step=step).on("input", self.on_slider_change).style("width","100%")
 
     def on_slider_change(self,ctx, id, value):
         if self.callback:
