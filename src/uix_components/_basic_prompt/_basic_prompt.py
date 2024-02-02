@@ -17,13 +17,13 @@ def get_image_data(folder_path):
         if os.path.basename(root) == "images":
             continue
         folder_item = {
-            "title": os.path.basename(root).replace("_", " "),
+            "title": os.path.basename(root).replace("_", " ").title(),
             "options": [],
         }
         for file in files:
             if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
                 folder_item["options"].append({
-                    "name": file.split(".")[0].replace("_", " "),
+                    "name": file.split(".")[0].replace("_", " ").title(),
                     "image": f"/_basic_prompt_images/{os.path.basename(root)}/{file}"
                 })
         data.append(folder_item)
@@ -107,7 +107,10 @@ class basic_prompt(uix.Element):
                 self.history()
             elif self.bottom_content_type == "Examples":
                 self.example()
+            else:
+                self.example()
             with div(id="prompt-generator-options").cls("prompt-generator-options"):
+                print(self.bottom_content_type)
                 for option in self.prompt_options:
                     if option["name"] is not "Prompt Generator":
                         if self.bottom_content_type == option["name"]:
@@ -153,6 +156,7 @@ class basic_prompt(uix.Element):
     def set_bottom_content(self,ctx, id, value):
         self.bottom_content_type = value
         if self.bottom_content_type == "Prompt Generator":
+            ctx.elements["bottom"].update(self.bottom_content_manager)
             self.dialog.show()
             self.init()
             self.prompt_input.focus()
@@ -176,7 +180,7 @@ class basic_prompt(uix.Element):
         with div(id="prompt-generator-images").cls("prompt-generator-images"):
             self.prompt_generator_images_filter()
         with div(id="prompt-generator-options").cls("prompt-generator-options"):
-            self.filter_input = input(id="prompt-generator-filter-input", value=self.filter_text, placeholder = "Filter ...").cls("prompt-generator-filter-input").on("change", self.on_filter_change)
+            self.filter_input = input(id="prompt-generator-filter-input", value=self.filter_text, placeholder = "Filter ...").cls("prompt-generator-filter-input").on("input", self.on_filter_change)
             for self.prompt_generator_data in self.prompt_generator_datas:
                 if self.prompt_generator_type == self.prompt_generator_data["title"]:
                     button(self.prompt_generator_data["title"],id=self.prompt_generator_data["title"]).cls("wall").on("click", self.set_prompt_content)
@@ -204,8 +208,8 @@ class basic_prompt(uix.Element):
         return example
 
     def update_prompt_generator_content(self,ctx, id, value):
-        content = ctx.elements["prompt-generator-content"]
-        content.update(self.prompt_generator)
+        content = ctx.elements["prompt-generator-images"]
+        content.update(self.prompt_generator_images_filter)
         self.init()
         self.prompt_input.focus()               
 

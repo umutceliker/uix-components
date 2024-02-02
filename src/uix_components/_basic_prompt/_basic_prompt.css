@@ -47,6 +47,7 @@
     transition: all 0.5s ease-in-out;
     cursor: text;
     overflow-y: auto;
+    align-content: flex-start;
 }
 
 .prompt-content {
@@ -176,3 +177,4 @@
         padding-top: 15px;
         box-sizing: border-box;
     }
+
