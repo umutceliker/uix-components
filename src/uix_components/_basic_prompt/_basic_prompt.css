@@ -37,6 +37,7 @@
     
 .prompt-texts {
     width: 100%;
+    height: 100%;
     flex-wrap: wrap;
     display: flex;
     flex-direction: row;
@@ -45,6 +46,13 @@
     gap: 2px;
     transition: all 0.5s ease-in-out;
     cursor: text;
+    overflow-y: auto;
+    align-content: flex-start;
+}
+
+.prompt-content {
+    width: 100%;
+    height: 100%;
 }
     
     .prompt-texts p:hover {
@@ -169,3 +177,4 @@
         padding-top: 15px;
         box-sizing: border-box;
     }
+
