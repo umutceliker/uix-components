@@ -1,3 +1,4 @@
+
 event_handlers["init-seadragon"] = function (id, value, event_name) {
     let config = value
 
@@ -8,7 +9,6 @@ event_handlers["init-seadragon"] = function (id, value, event_name) {
         maxZoomPixelRatio: 4,
         tileSources : {"type": "image","url": config.image},
         showNavigationControl: true,
-        
     };
 
     document.getElementById(id).viewerConfig = config.buttonGroup;
@@ -19,12 +19,7 @@ createIcons(viewer,config.buttonGroup);
 }
 
 function createIcons(viewer,config) {
-    viewer.buttonGroup.buttons = [];
-    const buttonGroupElement = viewer.buttonGroup.element;
-    while (buttonGroupElement.firstChild) {
-        buttonGroupElement.removeChild(buttonGroupElement.firstChild);
-    }
-    viewer.buttonGroup.element.innerHTML = "";
+    clearButtonGroupElements(viewer.buttonGroup);
     viewer.buttonGroup.element.style.display = "flex";
     viewer.buttonGroup.element.style.flexDirection = "row";
 
@@ -121,5 +116,48 @@ event_handlers["seadragon"] = function (id, command, event_name) {
             viewer.gestureSettingsMouse.clickToZoom = cmd;
             viewer.gestureSettingsMouse.dragToPan = cmd;
             break;
+
+        case "zoomIn":
+            viewer.viewport.zoomBy(1.5);
+            break;
+        
+        case "zoomOut":
+            viewer.viewport.zoomBy(0.5);
+            break;
+
+        case "home":
+            viewer.viewport.goHome();
+            break;
+        
+        case "fullscreen":
+            viewer.setFullScreen(true);
+            break;
+
+        case "download":
+            downloadFullImage();
+            break;
+    }
+    function genRandomNumbers(){
+        const array = new Uint32Array(10);
+        crypto.getRandomValues(array);
+        return Array.from(array).map(n => n.toString(16)).join('');
+    };
+    function downloadFullImage() {
+        const viewer = document.getElementById(id).viewer;
+        let tileSources = viewer.world.getItemAt(0).source;
+        let imageUrl = tileSources.url || tileSources[0].url;
+
+        if (!imageUrl) {
+            console.error('Full image URL not found');
+            return;
+        }
+
+        var link = document.createElement('a');
+        link.href = imageUrl;
+        const fileExtension = imageUrl.split('.').pop();
+        link.download = `${genRandomNumbers()}.${fileExtension}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 }
