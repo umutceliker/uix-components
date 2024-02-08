@@ -24,6 +24,7 @@ class button_group(row):
                 if value.get("link") is not None:
                     with link("",id=self.btn_id,href=value.get("link")) as _link:
                         self.link=_link
+                        self.link.cls(value.get("btn_classes"))
                         if value.get("download") is True:
                             name=value.get("link").split("/")[-1]
                             self.link.attrs["download"]=name
@@ -56,11 +57,9 @@ class button_group(row):
 
     def hide(self):
         self.set_style("display","none")
-        print("hide")
         
     def show(self):
         self.set_style("display","flex")
-        print("show")
         
 
 title = "Button Group"
