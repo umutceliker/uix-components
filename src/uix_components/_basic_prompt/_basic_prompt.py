@@ -234,6 +234,12 @@ class basic_prompt(uix.Element):
     def get_string(self):
         return ",".join(self.texts)
 
+    def __str__(self):
+        if len(self.texts) > 0:
+            return ", ".join(self.texts)
+        else:
+            return ""
+        
     def init(self):
         if self.session is not None:  # Check if self.session is set before using it
             print("self.session is set")
