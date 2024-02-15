@@ -16,11 +16,11 @@ uix.html.add_css("dialog.css","""
     .dialog-container-button{
         background-color: red;
         min-width: 0 !important;
-        width: 30px;
-        height: 30px;
+        width: 25px;
+        height: 25px;
         padding: 0;
     }
-                  """)
+""")
 
 class basic_dialog(dialog):
     def __init__(self,
@@ -40,7 +40,7 @@ class basic_dialog(dialog):
         with self:
             self.cls("dialog-container")
             with col(id="dialog-column").style("gap","10px"):
-                with col("").style("align-items","flex-end"):
+                with col("").style("align-items : flex-end; height: fit-content;"):
                     with button("",id = self.btnID).cls("dialog-container-button").on("click", lambda ctx, id, value: ctx.elements[self.id].hide()) as self.close_btn:
                         if close_icon:
                             icon(self.close_icon, id=self.btnID + "-icon")
