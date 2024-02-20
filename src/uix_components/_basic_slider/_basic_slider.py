@@ -1,5 +1,5 @@
 import uix
-from uix.elements import slider, border, input, row, text
+from uix.elements import slider, input, row, text
 
 uix.html.add_script("slider","""
     event_handlers["init-slider"] = function(id, value, event_name) {
@@ -19,7 +19,11 @@ uix.html.add_css("basic_slider_css","""
     width: 100%;
     flex-direction: column;
     gap: 5px;
-    }
+}
+.basic-slider-input {
+    width: 30px;
+    text-align: center;
+}
 """)
 class basic_slider(uix.Element):
     def __init__(self,name, id = None, min = 0, max = 100, value = 50, step = 1,callback = None):
@@ -33,7 +37,7 @@ class basic_slider(uix.Element):
         with self:
             with row().cls("wall hall").style("justify-content","space-between"):
                 text(name)
-                self.input=input(type="number", id = self.inputID, value = value).style("width","30px;").on("input", self.on_slider_change)
+                self.input=input(type="number", id = self.inputID, value = value).cls("basic-slider-input").on("input", self.on_slider_change)
                 self.input.attr("min",min)
                 self.input.attr("max",max)
                 self.input.attr("step",step)
