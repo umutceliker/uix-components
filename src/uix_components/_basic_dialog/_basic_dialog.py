@@ -2,6 +2,7 @@ import uix
 from uix.elements import col, button, dialog, icon
 
 uix.html.add_css("dialog.css","""
+
     .dialog-container{
         width: fit-content;
         height: fit-content;
@@ -11,15 +12,20 @@ uix.html.add_css("dialog.css","""
         justify-content: flex-start;
         padding: 10px;
         border-radius: 6px;
-        min-height:50%;
+
     }
     .dialog-container-button{
         background-color: red;
         min-width: 0 !important;
-        width: 25px;
-        height: 25px;
+        width: 30px;
+        height: 30px;
         padding: 0;
     }
+    .dialog-header{
+                 height: 5%;
+                 justify-content: center;
+                    align-items: flex-end;}
+                 
 """)
 
 class basic_dialog(dialog):
@@ -40,7 +46,7 @@ class basic_dialog(dialog):
         with self:
             self.cls("dialog-container")
             with col(id="dialog-column").style("gap","10px"):
-                with col("").style("align-items : flex-end; height: fit-content;"):
+                with col("").cls("dialog-header"):
                     with button("",id = self.btnID).cls("dialog-container-button").on("click", lambda ctx, id, value: ctx.elements[self.id].hide()) as self.close_btn:
                         if close_icon:
                             icon(self.close_icon, id=self.btnID + "-icon")
