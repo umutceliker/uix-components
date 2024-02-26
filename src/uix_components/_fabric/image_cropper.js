@@ -99,6 +99,13 @@ event_handlers["init-image-cropper"] = function (id, value, event_name) {
     brush_element_id.value = this.value;
     brush_element_id.dispatchEvent(new Event('change'));
   });
+
+  resetButton=document.getElementById('repeater-tool-reset-button');
+  resetButton.addEventListener('click', function (e) {
+    brushSize =70 * 2;
+    repeater_checkbox.checked = false;    
+    updateAndMoveImage(id, document.getElementById(id), document.getElementById(id).lastAxisMoved, document.getElementById(id).canvas, document.getElementById(input_canvas_id).scale);
+  });
 };
 
 
