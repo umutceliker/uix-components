@@ -4,8 +4,8 @@ from uix.elements import col, button, dialog, icon
 uix.html.add_css("dialog.css","""
 
     .dialog-container{
-        width: fit-content;
-        height: fit-content;
+        width: 60vw;
+        height: 80vh;
         align-items: flex-end;
         background-color: var(--background);
         gap: 10px;
