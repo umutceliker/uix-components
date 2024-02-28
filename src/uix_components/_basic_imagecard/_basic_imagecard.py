@@ -1,6 +1,6 @@
 import uix
 
-from uix.elements import text, image, div
+from uix.elements import text, image, div, col
 
 uix.html.add_css("imagecard-css",""".card {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -38,15 +38,22 @@ uix.html.add_css("imagecard-css",""".card {
     transition: 0.2s;
     width: 100%;
     bottom: -100%;
-}
-
-.card:hover .content .from-bottom {
-    position: absolute;
-    width: 100%;
     background-color: rgba(0, 0, 0, .65);
     bottom: 0%;
     height: fit-content;
+    position: absolute;
+    padding: 5px;
 }
+
+.absolute-center {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: var(--background-mask);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+                 }
 """)
 
 class basic_imagecard(uix.Element):
@@ -61,6 +68,12 @@ class basic_imagecard(uix.Element):
         with self:
             with div().cls("card wall hall"):
                 with div().cls("content"):
-                    image(value=imagesrc).cls("image")
+                    with col(id="skeleton"+ id).cls("absolute-center skelaton-loading") as self.loading:
+                        div().cls("skelaton-item").style("height","80%")
+                        div().cls("skelaton-item").style("height","20%")
+                    image(value=imagesrc).cls("image").on('load', self.on_image_load)
                     with div().cls("from-bottom"):
                         text(self.textstr)
+
+    def on_image_load(self, ctx, id, value):    
+        self.loading.set_style("display", "none")
