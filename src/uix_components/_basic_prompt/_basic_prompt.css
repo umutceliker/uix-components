@@ -25,12 +25,14 @@
 }
 
 .dialog-content {
-    width: 60vw;
-    height: 80vh;
+    height: 90%;
+    gap: 10px;
     justify-content: flex-start;
 }
 
 .prompt-generator-content {
+    display: grid;
+    grid-template-columns: 5fr 1fr;
     align-items: flex-start;
     height: 85%;
 }
@@ -63,6 +65,8 @@
                 }
                      
     .bottom-content {
+    display: grid;
+    grid-template-columns: 7fr 1fr;
     width: 100%;
     background-color: var(--background-secondary);
     left: 0;
@@ -79,7 +83,6 @@
                     
                      
 .prompt-generator-options {
-    width: 20%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -103,11 +106,16 @@
     height: 100%;
     max-height: 100%;
     overflow-y: auto;
-    width: 80%;
     border-right: 1px solid gray;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, 1fr);
+    padding: 5px;
+    box-sizing: border-box;
         }
+
+    .prompt-generator-images .card {
+        box-sizing: border-box;
+    }
                                           
     .prompt-input {
             border: none;
@@ -162,6 +170,8 @@
         border-radius: 2px;
         transition: all 0.2s ease-in-out;
         margin: 0px;
+        border: 1px solid gray;
+        background-color: var(--background);
     }
 
     .prompt-btn-toggle {
@@ -178,3 +188,73 @@
         box-sizing: border-box;
     }
 
+    .prompt-generator-types {
+        height: fit-content;
+    }
+
+@media screen and (max-width: 600px) {
+    .prompt-generator-images {
+        grid-template-columns: repeat(1, 1fr);
+        grid-template-rows: repeat(10, 1fr);
+    }
+}
+
+@media  screen and (min-width: 601px) and (max-width: 800px) {
+    .prompt-generator-images {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(10, 1fr);
+    }
+
+    .prompt-text {
+        font-size: 12px;
+    }
+}
+
+@media screen and (min-width: 801px) and (max-width: 1024px) {
+    .prompt-generator-images {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+    }
+}
+
+@media screen and (min-width: 1025px) and (max-width: 1280px) {
+    .prompt-generator-images {
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+    }
+}
+
+
+@keyframes skeleton-loading {
+    0% {
+        background-color: var(--background-secondary);
+    }
+    50% {
+        background-color: gray;
+    }
+    100% {
+        background-color: var(--background-secondary);
+    }
+}
+
+.skelaton-loading {
+    z-index: 9999;
+    background-color: var(--background);
+    padding: 10px;
+    box-sizing: border-box;
+    gap: 10px;
+}
+
+.skelaton-item {
+    animation: skeleton-loading 1s infinite;
+    width: 100%;
+    background-color: var(--background-secondary);
+    border-radius: 5px;
+}
+
+.prompt-generator-card:hover {
+    scale: 1.5;
+    position: sticky;
+    z-index: 9999;
+    transition: all 0.2s ease-in-out;
+}
