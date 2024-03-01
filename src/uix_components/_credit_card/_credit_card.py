@@ -1,12 +1,12 @@
 import os
 import io
 import uix
-from uix.elements import row,image,text
+from uix.elements import row
 
 uix.html.add_css_file("_credit_card.css",__file__)
+uix.html.add_script_source(id="credit_card",script="imask.min.js",beforeMain=False,localpath=__file__)
 uix.html.add_script_source(id="credit_card_ui",script="_credit_card.js",beforeMain=False,localpath=__file__)
 uix.html.add_script_source(id="credit_card",script="_add_card.js",beforeMain=False,localpath=__file__)
-uix.html.add_script_source(id="credit_card",script="imask.min.js",beforeMain=True,localpath=__file__)
 
 
 path=os.path.join(os.path.dirname(os.path.dirname(__file__)), "_credit_card")
@@ -21,16 +21,18 @@ class credit_card(uix.Element):
             super().__init__(value,id = id)
             self.path=path
             self.size("100%","100%")
+            print("credit_card init")
             with self:
                 with row("",id="credit-cards").cls("credit-card-row") as creditcard:
                     self.creditcard=creditcard
                 
-    def bind(self, session, only_children=False):
-        super().bind(session, only_children)
+    def init(self):
+        print("credit_card init")
         self.session.queue_for_send(self.id,{
             'creditcard': self.creditcard.id,
             'html_content': html_content,
-             }, 
+            }, 
+
              "init-credit-card")
                 
                 
