@@ -83,7 +83,7 @@ class basic_prompt(uix.Element):
             with div(id="prompt-content").cls("prompt-content"):
                 self.prompt_content()
             if self.is_prompt_generator_open:
-                self.dialog = dialog("prompt-generator-dialog", close_icon="fa-solid fa-check", elements=[self.dialog_content], close_on_outside=False)
+                self.dialog = dialog("prompt-generator-dialog", close_icon="fa-solid fa-check", elements=[self.dialog_content], close_on_outside=False, close_callback=self.on_dialog_close)
                 self.dialog.close_btn.classes = []
             with div(id="bottom").cls("hidden") as self.bottom:
                 self.bottom_content_manager()
@@ -116,11 +116,11 @@ class basic_prompt(uix.Element):
             self.prompt_input = input(id="prompt-input", value="", placeholder = T("Write Your Prompt Here")).cls("prompt-input").on("change", self.on_change).on("pop", lambda ctx, id, value: self.pop(ctx, id, self.texts[-1]))
         return text_section     
 
-    def update_texts_content(self,ctx, id, value):
+    def update_texts_content(self,ctx, id, value, without_filter=False):
         prompt_content = ctx.elements["prompt-content"]
         prompt_content.update(self.prompt_content)
         if self.is_prompt_generator_open:
-            self.update_prompt_generator_content(ctx, id, value)
+            self.update_prompt_generator_content(ctx, id, value, without_filter)
             self.init()        
             prompt_content.update()
             self.prompt_input.focus() 
@@ -128,16 +128,19 @@ class basic_prompt(uix.Element):
             self.init()
             self.prompt_input.focus()
 
+    def add_prompt_from_images(self, ctx, id, value):
+        self.on_change(ctx, id, value["value"], True)
+
     def dialog_content(self):
         with col(id="dialog-content").cls("dialog-content") as dialog_content:
-            with row("", id="prompt-generator-prompt").cls("prompt-texts prompt prompt-generator-prompt").style("height","15%"):
+            with row("", id="prompt-generator-prompt").cls("prompt-texts prompt prompt-generator-prompt").style("height","15%").on("add-prompt", self.add_prompt_from_images):
                 self.prompt_generator_prompt_area()
             with row("", id="prompt-generator-content").cls("prompt-generator-content"):
                 self.prompt_generator()
         return dialog_content
 
     def prompt_generator_prompt_area(self):
-        with div().cls("wall prompt-texts") as text_section:
+        with div(id="prompt-generator-prompt-area").cls("wall prompt-texts") as text_section:
             for text in self.texts:
                 self.text_comp(text)
         return text_section         
@@ -177,6 +180,9 @@ class basic_prompt(uix.Element):
             with col().cls("hall").style("justify-content","flex-end"):
                 imagecard(id="ref-image", imagesrc="/prompt_image/ref-image.png", textstr="Reference Image").style("pointer-events","none")
 
+    def on_dialog_close(self,ctx, id, value):
+        self.set_bottom_content(ctx, id, "Examples")
+
     def prompt_generator_types(self):
         with div() as types:
             print(self.prompt_generator_type)
@@ -209,7 +215,7 @@ class basic_prompt(uix.Element):
                     textstr = option["name"]
                     if textstr not in self.texts: 
                         if self.filter_text == "" or self.filter_text in textstr.lower() or self.filter_text in textstr.upper() or self.filter_text in textstr:   
-                            imagecard(id=textstr, imagesrc=option["image"], textstr=textstr).cls("prompt-generator-card to-remove").on("click", lambda ctx, id, value, textstr=textstr: self.on_change(ctx, id, textstr))
+                            imagecard(id=textstr, imagesrc=option["image"], textstr=textstr).cls("prompt-generator-card to-remove").on("click", lambda ctx, id, value, textstr=textstr: self.pop_image(ctx, id, textstr))
     
     def history(self):
         with col(id="prompt-history").cls("prompt-history") as history:
@@ -222,9 +228,10 @@ class basic_prompt(uix.Element):
                 text(value,id=key).cls("prompt-text").on("click", self.on_change)
         return example
 
-    def update_prompt_generator_content(self,ctx, id, value):
-        content = ctx.elements["prompt-generator-images"]
-        content.update(self.prompt_generator_images_filter)
+    def update_prompt_generator_content(self,ctx, id, value, without_filter=False):
+        if not without_filter:
+            content = ctx.elements["prompt-generator-images"]
+            content.update(self.prompt_generator_images_filter)
         prompt_types = ctx.elements["prompt-generator-types"]
         prompt_types.update(self.prompt_generator_types)
         prompt_generator_content = ctx.elements["prompt-generator-prompt"]
@@ -238,14 +245,14 @@ class basic_prompt(uix.Element):
             self.texts.remove(value)
             self.update_texts_content(ctx, id, value)
 
-    def on_change(self,ctx, id, value):
+    def on_change(self,ctx, id, value, without_filter=False):
         if value != "" and value not in self.texts:
             split_coma = value.split(",")
             for text in split_coma:
                 trimmed_text = text.strip()
                 if trimmed_text != "" and trimmed_text not in self.texts:
                     self.texts.append(trimmed_text)
-            self.update_texts_content(ctx, id, value)
+            self.update_texts_content(ctx, id, value, without_filter)
             self.prompt_input.value = ""
 
     def get_string(self):
@@ -261,6 +268,8 @@ class basic_prompt(uix.Element):
         else:
             return ""
         
+    def pop_image(self, ctx, id, value):
+        self.session.send(id, {"id": id, "value": value}, "delete-prompt-image")
 
     def init(self):
         if self.session is not None:  # Check if self.session is set before using it

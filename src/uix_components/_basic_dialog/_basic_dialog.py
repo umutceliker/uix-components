@@ -34,6 +34,7 @@ class basic_dialog(dialog):
                 elements=None,
                 close_on_outside = True, 
                 close_icon = None,
+                close_callback = None,
                 **kwargs
                 ):
         super().__init__(id=id, **kwargs)
@@ -42,12 +43,13 @@ class basic_dialog(dialog):
         self.dialog_elements = elements
         self.btnID = id + "-btn"
         self.close_icon = close_icon
+        self.close_callback = close_callback
 
         with self:
             self.cls("dialog-container")
             with col(id="dialog-column").style("gap","10px"):
                 with col("").cls("dialog-header"):
-                    with button("",id = self.btnID).cls("dialog-container-button").on("click", lambda ctx, id, value: ctx.elements[self.id].hide()) as self.close_btn:
+                    with button("",id = self.btnID).cls("dialog-container-button").on("click", self.close) as self.close_btn:
                         if close_icon:
                             icon(self.close_icon, id=self.btnID + "-icon")
                         else:
@@ -55,6 +57,10 @@ class basic_dialog(dialog):
                 for element in self.dialog_elements:
                     element()
 
+    def close(self, ctx, id, value):
+        ctx.elements[self.id].hide()
+        if self.close_callback:
+            self.close_callback(ctx, id, value)
 
 title = "Basic Dialog"
 

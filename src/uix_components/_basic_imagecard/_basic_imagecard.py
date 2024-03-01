@@ -68,7 +68,7 @@ class basic_imagecard(uix.Element):
         with self:
             with div().cls("card wall hall"):
                 with div().cls("content"):
-                    with col(id="skeleton"+ id).cls("absolute-center skelaton-loading") as self.loading:
+                    with col(id="skeleton "+ id).cls("absolute-center skelaton-loading") as self.loading:
                         div().cls("skelaton-item").style("height","80%")
                         div().cls("skelaton-item").style("height","20%")
                     image(value=imagesrc).cls("image").on('load', self.on_image_load)
