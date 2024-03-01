@@ -19,11 +19,7 @@ class image_viewer(uix.Element):
         }
         if size is not None and len(size) == 2:
             self.size(*size)
-
-    def bind(self,session):
-        if self.id is None:
-            self.id = "osd_" + str(session.next_id())
-        super().bind(session)
+        
 
     def init(self):
         self.session.queue_for_send(self.id, self.config, "init-seadragon")
