@@ -52,7 +52,7 @@ class basic_prompt(uix.Element):
         super().__init__(value, id = id)
         self.is_prompt_generator_open = is_prompt_generator_open
         self.texts = []
-
+        
         self.prompt_generator_datas = image_data
             
         self.prompt_options = [
@@ -77,7 +77,7 @@ class basic_prompt(uix.Element):
         self.options = options
         self.bottom_content_type = "Examples"
         self.prompt_generator_type = self.prompt_generator_datas[0]["title"]if len(self.prompt_generator_datas) > 0 else ""
-        self.id = "prompt-wrapper"
+        
 
         with self.cls("prompt"):
             with div(id="prompt-content").cls("prompt-content"):
@@ -272,6 +272,6 @@ class basic_prompt(uix.Element):
         if self.session is not None:  # Check if self.session is set before using it
             print("self.session is set")
             # Assuming you're calling the init-prompt event handler here
-            self.session.queue_for_send("init-prompt", {"inputID": "prompt-input", "historyID": "prompt-generator"}, "init-prompt")
+            self.session.queue_for_send("init-prompt", {"promptID":self.id,"inputID": "prompt-input", "historyID": "prompt-generator"}, "init-prompt")
         else:
             print("Warning: self.session is not set. Ensure it is set before calling init.")
