@@ -118,15 +118,12 @@ class basic_prompt(uix.Element):
 
     def update_texts_content(self,ctx, id, value, without_filter=False):
         prompt_content = ctx.elements["prompt-content"]
-        prompt_content.update(self.prompt_content)
         if self.is_prompt_generator_open:
             self.update_prompt_generator_content(ctx, id, value, without_filter)
-            self.init()        
-            prompt_content.update()
-            self.prompt_input.focus() 
-        else:
-            self.init()
-            self.prompt_input.focus()
+        self.init()        
+        prompt_content.update(self.prompt_content)
+        self.prompt_input.focus() 
+
 
     def add_prompt_from_images(self, ctx, id, value):
         self.on_change(ctx, id, value["value"], True)
