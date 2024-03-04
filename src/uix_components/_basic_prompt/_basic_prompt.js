@@ -2,7 +2,7 @@ if (!event_handlers["init-prompt"]) {
     event_handlers["init-prompt"] = (id, value, event_name) => {
         const inputElement = document.getElementById(value.inputID);
         const bottomElement = document.getElementById('bottom');
-        const promptElement = document.getElementById('prompt-wrapper');
+        const promptElement = document.getElementById(value.promptID);
 
         console.log("init-prompt", id, value, event_name);
 
