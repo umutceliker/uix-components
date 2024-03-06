@@ -1,8 +1,7 @@
 from uix.elements import label,input
+from uix import T
 import uix 
-
 uix.html.add_css_file("_toggle_checkbox.css",__file__)
-
 
 class toggle_checkbox(label):
     def __init__(self,
@@ -37,8 +36,8 @@ class toggle_checkbox(label):
                 usefor=label_usefor
             ).cls("toggle-slider"):
                 self.labels = label().cls("labels")
-                self.labels.attrs["data-on"] = toggle_on
-                self.labels.attrs["data-off"] = toggle_off
+                self.labels.attrs["data-on"] = T(toggle_on)
+                self.labels.attrs["data-off"] = T(toggle_off)
         
 
         
