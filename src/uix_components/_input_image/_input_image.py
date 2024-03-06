@@ -86,7 +86,7 @@ class input_image(uix.Element):
             self.dropzone_image.set_style("display", "flex")
             self.dropzone_parent.set_style("display", "flex")
             if self.on_upload_done:
-                self.on_upload_done(ctx)
+                self.on_upload_done(ctx, data, self.filename)
             
         elif status == "progress":
             self.loading_file.set_style("display", "flex")
