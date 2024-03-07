@@ -86,7 +86,7 @@ class input_image(uix.Element):
             self.dropzone_image.set_style("display", "flex")
             self.dropzone_parent.set_style("display", "flex")
             if self.on_upload_done:
-                self.on_upload_done(ctx, data, self.filename)
+                self.imageID=self.on_upload_done(ctx, data, self.filename)
             
         elif status == "progress":
             self.loading_file.set_style("display", "flex")
@@ -114,7 +114,6 @@ class input_image(uix.Element):
                 print("No image to reset")
 
     def setImage(self, options):
-        print("options",options)
         url = options.get("url", None)
         imageID = options.get("_id", None) or options.get("id", None)
         if url and imageID is not None:
@@ -123,7 +122,6 @@ class input_image(uix.Element):
             self.dropzone_image.value = url
             self.imageID = imageID
     
-
     
         
 
