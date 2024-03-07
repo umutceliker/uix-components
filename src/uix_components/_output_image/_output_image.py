@@ -75,10 +75,13 @@ class output_image(uix.Element):
                 name=self.image_viewer.value.split("/")[-1]
                 self.buttonGroup.link.attrs["download"]=name
                 self.buttonGroup.update()
-        else:
-            self.image_viewer.remove_class("opacity-30")
+        elif image_url is not None:
             self.image_viewer.value = image_url
-
+            self.image_viewer.remove_class("opacity-30")
+        else:
+            self.image_viewer.value = image_path
+            self.image_viewer.add_class("opacity-30")
+      
     def loading(self):
         self.image_viewer.add_class("hidden")
         self.output_loading.remove_class("hidden")
@@ -98,7 +101,7 @@ class output_image(uix.Element):
         
     def addToFavorite(self,ctx,id,value):
         if self.add_to_favorite is not None:
-            self.add_to_favorite(ctx, id, value)
+            self.add_to_favorite(ctx, id, self.value)
 
     def on_click(self, ctx, id, value):
         if value == "Zoom in":

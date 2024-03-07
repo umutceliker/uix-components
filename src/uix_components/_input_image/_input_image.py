@@ -123,9 +123,11 @@ class input_image(uix.Element):
                 print("No image to reset")
 
     def setImage(self, options):
+        print("options",options)
         url = options.get("url", None)
         imageID = options.get("_id", None) or options.get("id", None)
         if url and imageID is not None:
+            self.dropzone_parent.set_style("display", "none")
             self.dropzone_inside.set_style("display", "none")
             self.dropzone_image.set_style("display", "flex")
             self.dropzone_image.value = url
