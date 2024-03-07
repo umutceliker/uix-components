@@ -1,5 +1,5 @@
 import uix
-from uix.elements import file,col,text,label
+from uix.elements import file,col,text,label, row
 from uix import T
 from uix_components import image_viewer, fabric, button_group
 uix.html.add_css_file("_input_image.css",__file__)
@@ -55,10 +55,10 @@ class input_image(uix.Element):
                     text(T("Click to upload")).style("font-size","1.5rem")
                     text(T("It supports only png , jpeg files . Upload size is limited to 10MB")).style("font-size","1rem")
                     
-                if viewer == "seadragon":   
-                    self.create_image_viewer("my_images/AIT_AI_LOGO.png")
-                else:
-                   self.create_fabric_viewer()
+            if viewer == "seadragon":   
+                self.create_image_viewer("my_images/AIT_AI_LOGO.png")
+            else:
+                self.create_fabric_viewer()
 
     def file_callback(self,ctx, id, event, data, status):
         if event == "select":
@@ -68,7 +68,7 @@ class input_image(uix.Element):
        
     def upload_file(self,ctx, data, value):
         self.dropzone_parent.set_style("display", "none")
-        
+        self.canvas_container.set_style("display", "none")
         if data[0].size < 10000000 and (data[0].type == "image/png" or data[0].type == "image/jpeg"):
             self.file.upload(data[0].url)
             self.dropzone_image.value =data[0].url
@@ -81,34 +81,43 @@ class input_image(uix.Element):
 
     def upload_callback(self,ctx, id, data, status):
         if status == "done":
+            self.canvas_container.set_style("display", "flex")
             self.loading_file.set_style("display", "none")
             self.dropzone_inside.set_style("display", "none")
             self.dropzone_image.set_style("display", "flex")
-            self.dropzone_parent.set_style("display", "flex")
+            self.dropzone_parent.set_style("display", "none")
+            self.file.set_style("display", "none")
             if self.on_upload_done:
                 self.imageID=self.on_upload_done(ctx, data, self.filename)
             
         elif status == "progress":
             self.loading_file.set_style("display", "flex")
+            self.dropzone_image.set_style("display", "none")
         else:
             print("error")
                     
     def create_image_viewer(self, image_url):
-        self.dropzone_image = image_viewer(id=self.viewer_id, value=image_url, buttonGroup=buttonGroupConfig["seadragon"]).size("100%", "100%")
+        with row(id="canvas-container") as canvas_container:
+            self.canvas_container = canvas_container
+            self.dropzone_image = image_viewer(id=self.viewer_id, value=image_url, buttonGroup=buttonGroupConfig["seadragon"]).size("100%", "100%")
         self.dropzone_image.on("button_click", self.resetImage)
         self.dropzone_image.style("display: none ; z-index: 3")
 
     def create_fabric_viewer(self):
-        self.dropzone_image = fabric(id=self.viewer_id)
+        with row(id="canvas-container") as canvas_container:
+            self.canvas_container = canvas_container  
+            self.dropzone_image = fabric(id=self.viewer_id)
         self.dropzone_image.style("display: none ; z-index: 8")
         buttonGroupConfig["fabric"]["Delete"]["onClick"] = self.resetImage
         button_group(items=buttonGroupConfig["fabric"], id=self.viewer_id + "-button-group").cls("button-group")
 
     def resetImage(self,ctx, id, value):
-            if self.dropzone_image.value:                
+            if self.dropzone_image.value:       
+                self.dropzone_parent.set_style("display", "flex")         
                 self.dropzone_inside.set_style("display", "flex")
                 self.dropzone_image.set_style("display", "none")
                 self.dropzone_image.value = None
+                self.file.set_style("display", "flex !important")   
                 self.file.value = None
             else:
                 print("No image to reset")
