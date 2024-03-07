@@ -81,12 +81,13 @@ class input_image(uix.Element):
 
     def upload_callback(self,ctx, id, data, status):
         if status == "done":
-            self.canvas_container.set_style("display", "flex")
+            
             self.loading_file.set_style("display", "none")
             self.dropzone_inside.set_style("display", "none")
             self.dropzone_image.set_style("display", "flex")
             self.dropzone_parent.set_style("display", "none")
             self.file.set_style("display", "none")
+            self.canvas_container.set_style("visibility", "visible")
             if self.on_upload_done:
                 self.imageID=self.on_upload_done(ctx, data, self.filename)
             
@@ -98,21 +99,24 @@ class input_image(uix.Element):
                     
     def create_image_viewer(self, image_url):
         with row(id="canvas-container") as canvas_container:
-            self.canvas_container = canvas_container
+            self.canvas_container = canvas_container 
             self.dropzone_image = image_viewer(id=self.viewer_id, value=image_url, buttonGroup=buttonGroupConfig["seadragon"]).size("100%", "100%")
+        self.canvas_container.style("visibility", "hidden") 
         self.dropzone_image.on("button_click", self.resetImage)
         self.dropzone_image.style("display: none ; z-index: 3")
 
     def create_fabric_viewer(self):
         with row(id="canvas-container") as canvas_container:
-            self.canvas_container = canvas_container  
+            self.canvas_container = canvas_container
             self.dropzone_image = fabric(id=self.viewer_id)
+        self.canvas_container.style("visibility", "hidden") 
         self.dropzone_image.style("display: none ; z-index: 8")
         buttonGroupConfig["fabric"]["Delete"]["onClick"] = self.resetImage
         button_group(items=buttonGroupConfig["fabric"], id=self.viewer_id + "-button-group").cls("button-group")
 
     def resetImage(self,ctx, id, value):
-            if self.dropzone_image.value:       
+            if self.dropzone_image.value:
+                self.canvas_container.set_style("visibility", "hidden")       
                 self.dropzone_parent.set_style("display", "flex")         
                 self.dropzone_inside.set_style("display", "flex")
                 self.dropzone_image.set_style("display", "none")
@@ -123,7 +127,6 @@ class input_image(uix.Element):
                 print("No image to reset")
 
     def setImage(self, options):
-        print("options",options)
         url = options.get("url", None)
         imageID = options.get("_id", None) or options.get("id", None)
         if url and imageID is not None:
@@ -132,6 +135,7 @@ class input_image(uix.Element):
             self.dropzone_image.set_style("display", "flex")
             self.dropzone_image.value = url
             self.imageID = imageID
+            self.canvas_container.set_style("visibility", "visible")
     
     
         
