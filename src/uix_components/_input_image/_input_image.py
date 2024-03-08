@@ -81,18 +81,11 @@ class input_image(uix.Element):
 
     def upload_callback(self,ctx, id, data, status):
         if status == "done":
-            
-            self.dropzone_inside.set_style("display", "none")
-            self.dropzone_image.set_style("display", "flex")
-            self.dropzone_parent.set_style("display", "none")
-            self.file.set_style("display", "none")
-
             if self.on_upload_done:
-                self.imageID=self.on_upload_done(ctx, data, self.filename)
-            
-            self.loading_file.set_style("display", "none")
-            self.canvas_container.set_style("display", "flex")
-            self.canvas_container.set_style("visibility", "visible")            
+                self.on_upload_done(ctx, data, self.filename)
+            else:
+                self.show_image()
+
         elif status == "progress":
             self.loading_file.set_style("display", "flex")
             self.dropzone_image.set_style("display", "none")
@@ -118,13 +111,7 @@ class input_image(uix.Element):
 
     def resetImage(self,ctx, id, value):
             if self.dropzone_image.value:
-                self.canvas_container.set_style("visibility", "hidden")       
-                self.dropzone_parent.set_style("display", "flex")         
-                self.dropzone_inside.set_style("display", "flex")
-                self.dropzone_image.set_style("display", "none")
-                self.dropzone_image.value = None
-                self.file.set_style("display", "flex !important")   
-                self.file.value = None
+                self.hide_image()
             else:
                 print("No image to reset")
 
@@ -132,16 +119,32 @@ class input_image(uix.Element):
         url = options.get("url", None)
         imageID = options.get("_id", None) or options.get("id", None)
         if url and imageID is not None:
-            self.dropzone_parent.set_style("display", "none")
-            self.dropzone_inside.set_style("display", "none")
-            self.dropzone_image.set_style("display", "flex")
+            self.show_image()
             self.dropzone_image.value = url
             self.imageID = imageID
-            self.canvas_container.set_style("visibility", "visible")
+          
+        else:
+            self.hide_image()
     
     
         
+    def show_image(self):
+        self.dropzone_parent.set_style("display", "none")
+        self.dropzone_inside.set_style("display", "none")
+        self.dropzone_image.set_style("display", "flex")
+        self.loading_file.set_style("display", "none")
+        self.canvas_container.set_style("display", "flex")
+        self.canvas_container.set_style("visibility", "visible")
 
+    def hide_image(self):
+        self.canvas_container.set_style("visibility", "hidden")       
+        self.dropzone_parent.set_style("display", "flex")         
+        self.dropzone_inside.set_style("display", "flex")
+        self.dropzone_image.set_style("display", "none")
+        self.dropzone_image.value = None
+        self.file.set_style("display", "flex !important")   
+        self.file.value = None
+        self.loading_file.set_style("display", "none")
 title = "Input Image"
 description = """
 ## input_image(value=None, id=None, viewer="seadragon",callback=None)
