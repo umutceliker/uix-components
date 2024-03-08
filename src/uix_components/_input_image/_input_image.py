@@ -82,21 +82,23 @@ class input_image(uix.Element):
     def upload_callback(self,ctx, id, data, status):
         if status == "done":
             
-            self.loading_file.set_style("display", "none")
             self.dropzone_inside.set_style("display", "none")
             self.dropzone_image.set_style("display", "flex")
             self.dropzone_parent.set_style("display", "none")
             self.file.set_style("display", "none")
-            self.canvas_container.set_style("visibility", "visible")
+
             if self.on_upload_done:
                 self.imageID=self.on_upload_done(ctx, data, self.filename)
             
+            self.loading_file.set_style("display", "none")
+            self.canvas_container.set_style("display", "flex")
+            self.canvas_container.set_style("visibility", "visible")            
         elif status == "progress":
             self.loading_file.set_style("display", "flex")
             self.dropzone_image.set_style("display", "none")
         else:
-            print("error")
-                    
+            ctx.elements["comp_alert"].open("alert-danger", T("File upload failed."))
+            
     def create_image_viewer(self, image_url):
         with row(id="canvas-container") as canvas_container:
             self.canvas_container = canvas_container 
