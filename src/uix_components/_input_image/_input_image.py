@@ -93,7 +93,7 @@ class input_image(uix.Element):
             ctx.elements["comp_alert"].open("alert-danger", T("File upload failed."))
             
     def create_image_viewer(self, image_url):
-        with row(id="canvas-container") as canvas_container:
+        with row(id=self.id + "canvas-container") as canvas_container:
             self.canvas_container = canvas_container 
             self.dropzone_image = image_viewer(id=self.viewer_id, value=image_url, buttonGroup=buttonGroupConfig["seadragon"]).size("100%", "100%")
         self.canvas_container.style("visibility", "hidden") 
@@ -101,7 +101,7 @@ class input_image(uix.Element):
         self.dropzone_image.style("display: none ; z-index: 3")
 
     def create_fabric_viewer(self):
-        with row(id="canvas-container") as canvas_container:
+        with row(id=self.id + "canvas-container") as canvas_container:
             self.canvas_container = canvas_container
             self.dropzone_image = fabric(id=self.viewer_id)
         self.canvas_container.style("visibility", "hidden") 
