@@ -24,10 +24,10 @@ def get_image_data(folder_path):
         }
         for file in files:
             if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
-                original_image_url = f"/prompt_image/{os.path.basename(root)}/{file}"
+                original_image_url = f"/manual_api/prompt_image/{os.path.basename(root)}/{file}"
                 output_path = os.path.join(os.path.dirname(__file__), "resized_images", os.path.basename(root), file)
                 os.makedirs(os.path.dirname(output_path), exist_ok=True)  # Create directories if not exists
-                downsized_image_url = f"/prompt_image/{os.path.basename(root)}/{file}?is-atr=m"
+                downsized_image_url = f"/manual_api/prompt_image/{os.path.basename(root)}/{file}?is-atr=m"
                 folder_item["options"].append({
                     "name": file.split(".")[0].replace("_", " ").title(),
                     "image": downsized_image_url,
@@ -120,7 +120,7 @@ class basic_prompt(uix.Element):
         prompt_content = ctx.elements["prompt-content"]
         if self.is_prompt_generator_open:
             self.update_prompt_generator_content(ctx, id, value, without_filter)
-        self.init()        
+        self.call_js()        
         prompt_content.update(self.prompt_content)
         self.prompt_input.focus() 
 
@@ -147,12 +147,12 @@ class basic_prompt(uix.Element):
         if self.bottom_content_type == "Prompt Generator":
             ctx.elements["bottom"].update(self.bottom_content_manager)
             self.dialog.show()
-            self.init()
+            self.call_js()
             self.prompt_input.focus()
             self.bottom.remove_class("hidden")
         else:
             ctx.elements["bottom"].update(self.bottom_content_manager)
-            self.init()
+            self.call_js()
             self.prompt_input.focus()
             self.bottom.remove_class("hidden")
 
@@ -175,7 +175,7 @@ class basic_prompt(uix.Element):
             with col(id="prompt-generator-types").cls("prompt-generator-types"):
                 self.prompt_generator_types()
             with col().cls("hall").style("justify-content","flex-end"):
-                imagecard(id="ref-image", imagesrc="/prompt_image/ref-image.png", textstr="Reference Image").style("pointer-events","none")
+                imagecard(id="ref-image", imagesrc="/manual_api/prompt_image/ref-image.png", textstr="Reference Image").style("pointer-events","none")
 
     def on_dialog_close(self,ctx, id, value):
         self.set_bottom_content(ctx, id, "Examples")
@@ -268,10 +268,53 @@ class basic_prompt(uix.Element):
     def pop_image(self, ctx, id, value):
         self.session.send(id, {"id": id, "value": value}, "delete-prompt-image")
 
-    def init(self):
-        if self.session is not None:  # Check if self.session is set before using it
-            print("self.session is set")
-            # Assuming you're calling the init-prompt event handler here
-            self.session.queue_for_send("init-prompt", {"promptID":self.id,"inputID": "prompt-input", "historyID": "prompt-generator"}, "init-prompt")
+    def call_js(self):
+        self.session.queue_for_send("init-prompt", {"promptID":self.id,"inputID": "prompt-input", "historyID": "prompt-generator"}, "init-prompt")
+
+    def create_resize_api(self):
+        if self.is_prompt_generator_open:
+            uix.app.register_api_handler("prompt_image", self.serve_prompt_image)
+
+    def serve_prompt_image(self, paths, args):
+        images_path = f"{cur_path}/images"
+
+        if paths[1] == 'ref-image.png':
+            return uix.send_file(f"{images_path}/ref-image.png")
+
+        
+        image_path = paths[1] + "/" + paths[2]
+        full_path = os.path.join(images_path, image_path)
+
+        if not os.path.exists(full_path):
+            return "Image not found" + full_path, 404
+        
+        is_atr = args.get("is-atr", False)
+
+
+        if is_atr:
+            downsized_image_path = f"{cur_path}/resized_images/{image_path}"
+            os.makedirs(os.path.dirname(downsized_image_path), exist_ok=True)
+            if not os.path.exists(downsized_image_path):
+                self.resize_image(full_path, downsized_image_path)
+            # Serve the downsized image
+            return uix.send_file(downsized_image_path)
         else:
-            print("Warning: self.session is not set. Ensure it is set before calling init.")
+            print("Serving original image", full_path)
+            return uix.send_file(full_path)
+
+    def resize_image(self, input_path, output_path, size=(300, 300)):
+        if self.is_prompt_generator_open:
+            try:
+                img = Image.open(input_path)
+                img.thumbnail(size)
+                img.save(output_path)
+            except Exception as e:
+                print(e)
+        else:
+            return "Prompt Generator is not open", 400
+        
+
+
+    def init(self):
+        self.create_resize_api()
+        self.call_js()
