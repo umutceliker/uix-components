@@ -83,6 +83,7 @@ class input_image(uix.Element):
         if status == "done":
             if self.on_upload_done:
                 self.on_upload_done(ctx, data, self.filename)
+                self.show_image()
             else:
                 self.show_image()
 
@@ -118,7 +119,7 @@ class input_image(uix.Element):
     def setImage(self, options):
         url = options.get("url", None)
         imageID = options.get("_id", None) or options.get("id", None)
-        if url and imageID is not None:
+        if url or imageID is not None:
             self.show_image()
             self.dropzone_image.value = url
             self.imageID = imageID
