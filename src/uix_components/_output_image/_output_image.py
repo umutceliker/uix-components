@@ -60,13 +60,14 @@ class output_image(uix.Element):
         buttonGroupConfig["fabric"]["Save"]["onClick"] = self.addToFavorite
         self.buttonGroup=button_group(items=buttonGroupConfig["fabric"], id=self.viewer_id + "-button-group").cls("button-group")
 
-    def set_image(self,ctx, image_url=None, image_path=None, data=None):
-        if data is not None:
+    def set_image(self,ctx, id=None, value=None):
+        url = value
+        imageID = id
+        if url or imageID is not None:
             self.output_loading.add_class("hidden")
             self.image_viewer.remove_class("hidden")
-            imageId = data.get("id") or data.get("_id")
-            self.value = imageId
-            self.image_viewer.value = data['url']
+            self.value = imageID
+            self.image_viewer.value = url
             self.image_viewer.remove_class("opacity-30")
             if self.viewer == "fabric":
                 self.output_loading.add_class("hidden")
@@ -75,12 +76,14 @@ class output_image(uix.Element):
                 name=self.image_viewer.value.split("/")[-1]
                 self.buttonGroup.link.attrs["download"]=name
                 self.buttonGroup.update()
-        elif image_url is not None:
-            self.image_viewer.value = image_url
-            self.image_viewer.remove_class("opacity-30")
-        else:
-            self.image_viewer.value = image_path
+                
+        elif imageID is None:
             self.image_viewer.add_class("opacity-30")
+            self.image_viewer.value = "my_images/AIT_AI_LOGO.png"
+        
+        else:
+            self.image_viewer.value = url
+        
       
     def loading(self):
         self.image_viewer.add_class("hidden")
