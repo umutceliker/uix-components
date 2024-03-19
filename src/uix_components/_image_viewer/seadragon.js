@@ -1,5 +1,6 @@
 
 event_handlers["init-seadragon"] = function (id, value, event_name) {
+    console.log("init-seadragon", id, value, event_name);
     let config = value
 
     let viewerConfig = {
@@ -130,6 +131,10 @@ event_handlers["seadragon"] = function (id, command, event_name) {
             break;
         
         case "fullscreen":
+            if (viewer.isFullPage()) {
+                viewer.setFullScreen(false);
+                return;
+            }
             viewer.setFullScreen(true);
             break;
 
