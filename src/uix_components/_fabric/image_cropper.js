@@ -36,7 +36,12 @@ event_handlers["init-image-cropper"] = function (id, value, event_name) {
   canvas.setWidth(parentElement.offsetWidth);
   canvas.setHeight(parentElement.offsetHeight);
 
-
+  window.addEventListener('resize', function() {
+    canvas.setWidth(parentElement.parentElement.offsetWidth);
+    canvas.setHeight(   parentElement.parentElement.offsetHeight);
+    canvas.renderAll();
+    
+  });
 
   canvas.on('mouse:wheel', function (opt) {
     opt.e.preventDefault();
