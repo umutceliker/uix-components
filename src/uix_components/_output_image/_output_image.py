@@ -85,9 +85,13 @@ class output_image(uix.Element):
             self.image_viewer.value = url
         
       
-    def loading(self):
-        self.image_viewer.add_class("hidden")
-        self.output_loading.remove_class("hidden")
+    def loading(self, is_loading=True):
+        if is_loading:
+            self.image_viewer.add_class("hidden")
+            self.output_loading.remove_class("hidden")
+        else:
+            self.output_loading.add_class("hidden")
+            self.image_viewer.remove_class("hidden")
        
     def sendToInput(self,ctx,id,value):
         if value == None and "comp_alert" in ctx.elements:
