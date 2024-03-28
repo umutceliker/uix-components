@@ -2,8 +2,12 @@ event_handlers["init-credit-card"] = (id, value, event_name) => {
         console.log("init-credit-card", id, value, event_name);
         credit_card = document.getElementById(value.creditcard);
         html_content = value.html_content;
+        add_button= document.getElementById(value.add_card_div);
+        console.log("add_button", add_button);
+        
         credit_card.innerHTML = html_content;
-
+        form= document.getElementById("paymentForm");
+        form.appendChild(add_button);
         event_handlers["rendered-js"](id, value, event_name);
     }
 event_handlers["rendered-js"] = (id, value, event_name) => {
@@ -279,5 +283,7 @@ securitycode.addEventListener('focus', function () {
     document.querySelector('.creditcard').classList.add('flipped');
 });
 
+
 event_handlers["addCard-js"](id, value, event_name);
+
 };
