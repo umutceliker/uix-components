@@ -61,7 +61,7 @@
   align-content: center;
   grid-template-areas: "name name" "number number" "expiration security" "addcard addcard"; /*expiration security */
   padding: 10px;
-  height: 100%;
+  height: max-content;
   gap: 20px;
 }
 
@@ -82,7 +82,7 @@ margin: 0 30px
 }
 
 .ccicon {
-  height: 58px;
+  height: 85%;
   position: absolute;
   right: 6px;
   top: calc(50% - 17px);
@@ -231,7 +231,7 @@ margin: 0 30px
 }
 
 #cardfront .st4 {
-  font-size: 54.7817px;
+  font-size: 54.7817px !important;
 }
 
 #cardfront .st5 {
@@ -240,7 +240,7 @@ margin: 0 30px
 }
 
 #cardfront .st6 {
-  font-size: 33.1112px;
+  font-size: 33.1112px !important;
 }
 
 #cardfront .st7 {
@@ -249,11 +249,11 @@ margin: 0 30px
 }
 
 #cardfront .st8 {
-  font-size: 24px;
+  font-size: 24px !important;
 }
 
 #cardfront .st9 {
-  font-size: 36.5498px;
+  font-size: 36.5498px !important;
 }
 
 #cardfront .st10 {
@@ -262,7 +262,7 @@ margin: 0 30px
 }
 
 #cardfront .st11 {
-  font-size: 16.1716px;
+  font-size: 16.1716px !important;
 }
 
 #cardfront .st12 {
@@ -298,7 +298,7 @@ margin: 0 30px
 }
 
 #cardback .st7 {
-  font-size: 27px;
+  font-size: 27px !important;
 }
 
 #cardback .st8 {
@@ -310,7 +310,7 @@ margin: 0 30px
 }
 
 #cardback .st10 {
-  font-size: 24px;
+  font-size: 24px !important;
 }
 
 #cardback .st11 {
@@ -322,7 +322,7 @@ margin: 0 30px
 }
 
 #cardback .st13 {
-  font-size: 37.769px;
+  font-size: 37.769px !important;
 }
 
 /* FLIP ANIMATION */
@@ -389,7 +389,7 @@ margin: 0 30px
 }
 
 .message-text{
-  font-size:2.5rem;
+  font-size:2.5rem !important;
   font-weight: bold;
   margin: 20px 0;
 }
