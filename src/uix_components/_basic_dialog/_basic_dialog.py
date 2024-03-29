@@ -1,5 +1,5 @@
 import uix
-from uix.elements import col, button, dialog, icon
+from uix.elements import col, button, dialog, icon, row, text
 
 uix.html.add_css("dialog.css","""
 
@@ -23,8 +23,8 @@ uix.html.add_css("dialog.css","""
     }
     .dialog-header{
                  height: 5%;
-                 justify-content: center;
-                    align-items: flex-end;}
+                 justify-content: space-between;
+                    align-items: center;}
                  
 """)
 
@@ -35,6 +35,7 @@ class basic_dialog(dialog):
                 close_on_outside = True, 
                 close_icon = None,
                 close_callback = None,
+                title = None,
                 **kwargs
                 ):
         super().__init__(id=id, **kwargs)
@@ -44,11 +45,16 @@ class basic_dialog(dialog):
         self.btnID = id + "-btn"
         self.close_icon = close_icon
         self.close_callback = close_callback
+        self.title = title
 
         with self:
             self.cls("dialog-container")
-            with col(id="dialog-column").style("gap","10px"):
-                with col("").cls("dialog-header"):
+            with col(id="dialog-column").style("gap","20px"):
+                with row("").cls("dialog-header"):
+                    if self.title:
+                        text(value=self.title).style("font-size","1.5rem").style("font-weight","bold")
+                    else:
+                        text(value="")
                     with button("",id = self.btnID).cls("dialog-container-button").on("click", self.close) as self.close_btn:
                         if close_icon:
                             icon(self.close_icon, id=self.btnID + "-icon")
