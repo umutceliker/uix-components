@@ -2,7 +2,7 @@ import os
 import json
 from PIL import Image
 import uix
-from uix.elements import button, border, input, canvas, text, div, row, header, col, label
+from uix.elements import button, border, input, canvas, text, div, row, header, col, label, icon, image
 from uix_components import basic_imagecard as imagecard
 from uix_components import basic_dialog as dialog
 
@@ -18,22 +18,35 @@ def get_image_data(folder_path):
     for root, dirs, files in os.walk(folder_path):
         if os.path.basename(root) == "images":
             continue
-        folder_item = {
-            "title": os.path.basename(root).replace("_", " ").title(),
-            "options": [],
-        }
-        for file in files:
-            if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
-                original_image_url = f"/manual_api/prompt_image/{os.path.basename(root)}/{file}"
-                output_path = os.path.join(os.path.dirname(__file__), "resized_images", os.path.basename(root), file)
-                os.makedirs(os.path.dirname(output_path), exist_ok=True)  # Create directories if not exists
-                downsized_image_url = f"/manual_api/prompt_image/{os.path.basename(root)}/{file}?is-atr=m"
-                folder_item["options"].append({
-                    "name": file.split(".")[0].replace("_", " ").title(),
-                    "image": downsized_image_url,
-                    "originalImage": original_image_url
-                })
-        data.append(folder_item)
+        
+        parent_folder_name = os.path.basename(os.path.dirname(root))
+        
+        if parent_folder_name == "images":
+            parent_folder_name = os.path.basename(root)
+            super_folder_item = {
+                "super_folder_name": parent_folder_name,
+                "ref_image": os.path.basename(root),
+                "ref_image_url": f"/manual_api/prompt_image/"+os.path.basename(root)+"/ref-image.png",
+                "datas": []
+            }
+            for sub_dir in dirs:
+                sub_dir_path = os.path.join(root, sub_dir)
+                folder_item = {
+                    "title": sub_dir.replace("_", " ").title(),
+                    "options": [],
+                }
+                for file in os.listdir(sub_dir_path):
+                    if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
+                        original_image_url = f"/manual_api/prompt_image/{os.path.relpath(sub_dir_path, folder_path)}/{file}"
+                        downsized_image_url = f"/manual_api/prompt_image/{os.path.relpath(sub_dir_path, folder_path)}/{file}?is-atr=m"
+                        folder_item["options"].append({
+                            "name": file.split(".")[0].replace("_", " ").title(),
+                            "image": downsized_image_url,
+                            "originalImage": original_image_url
+                        })
+                super_folder_item["datas"].append(folder_item)
+            
+            data.append(super_folder_item)        
     return data
 
 image_data = get_image_data(f"{cur_path}/images")
@@ -67,23 +80,26 @@ class basic_prompt(uix.Element):
 
         if self.is_prompt_generator_open:
             self.prompt_options.append({
-                "name": "Prompt Generator",
+                "name": "Prompt Builder",
                 "id": "prompt-generator",
                 "active": False
             })
 
         self.filter_text = ""
-
+        self.selected_ref_image_data = self.prompt_generator_datas[0]
+        self.is_dialog_open = False
         self.options = options
         self.bottom_content_type = "Examples"
-        self.prompt_generator_type = self.prompt_generator_datas[0]["title"]if len(self.prompt_generator_datas) > 0 else ""
-        
+        self.prompt_generator_type = self.selected_ref_image_data["datas"][0]["title"] if len(self.selected_ref_image_data) > 0 else ""
+        self.ref_images = []
+        for data in self.prompt_generator_datas:
+            self.ref_images.append(data["ref_image_url"])        
 
         with self.cls("prompt"):
             with div(id="prompt-content").cls("prompt-content"):
                 self.prompt_content()
             if self.is_prompt_generator_open:
-                self.dialog = dialog("prompt-generator-dialog", close_icon="fa-solid fa-check", elements=[self.dialog_content], close_on_outside=False, close_callback=self.on_dialog_close)
+                self.dialog = dialog("prompt-generator-dialog", title="Prompt Builder", close_icon="fa-solid fa-check", elements=[self.dialog_content], close_on_outside=False, close_callback=self.on_dialog_close)
                 self.dialog.close_btn.classes = []
             with div(id="bottom").cls("hidden") as self.bottom:
                 self.bottom_content_manager()
@@ -94,19 +110,14 @@ class basic_prompt(uix.Element):
                 self.example()
             else:
                 self.example()
-            with div(id="prompt-generator-options").cls("prompt-generator-options"):
+            with div(id="prompt-generator-options").cls("prompt-generator-options").style("height","fit-content"):
                 print(self.bottom_content_type)
                 for option in self.prompt_options:
-                    if option["name"] is not "Prompt Generator":
-                        if self.bottom_content_type == option["name"]:
-                            button(option["name"],id=option["id"]).cls("wall").on("click", self.set_bottom_content)
-                        else:
-                            button(option["name"],id=option["id"]).cls("wall prompt-btn-toggle").on("click", self.set_bottom_content)
+                    if self.bottom_content_type == option["name"]:
+                        button(option["name"],id=option["id"]).cls("wall").on("click", self.set_bottom_content)
                     else:
-                            if self.bottom_content_type == option["name"]:
-                                button(option["name"],id=option["id"]).cls("wall").on("click", self.set_bottom_content)
-                            else:
-                                button(option["name"],id=option["id"]).cls("wall prompt-btn-toggle").on("click", self.set_bottom_content)
+                        button(option["name"],id=option["id"]).cls("wall prompt-btn-toggle").on("click", self.set_bottom_content)
+
         return bottom_content
 
     def prompt_content(self):
@@ -130,10 +141,11 @@ class basic_prompt(uix.Element):
 
     def dialog_content(self):
         with col(id="dialog-content").cls("dialog-content") as dialog_content:
-            with row("", id="prompt-generator-prompt").cls("prompt-texts prompt prompt-generator-prompt").style("height","15%").on("add-prompt", self.add_prompt_from_images):
-                self.prompt_generator_prompt_area()
-            with row("", id="prompt-generator-content").cls("prompt-generator-content"):
-                self.prompt_generator()
+                with row("", id="prompt-generator-prompt").cls("prompt-texts prompt prompt-generator-prompt").style("height","15%").on("add-prompt", self.add_prompt_from_images):
+                    self.prompt_generator_prompt_area()
+                with row("", id="prompt-generator-content").cls("prompt-generator-content"):
+                    if self.is_dialog_open:
+                        self.prompt_generator()
         return dialog_content
 
     def prompt_generator_prompt_area(self):
@@ -144,7 +156,10 @@ class basic_prompt(uix.Element):
 
     def set_bottom_content(self,ctx, id, value):
         self.bottom_content_type = value
-        if self.bottom_content_type == "Prompt Generator":
+        if self.bottom_content_type == "Prompt Builder":
+            self.is_dialog_open = True
+            ctx.elements["prompt-generator-prompt"].update(self.prompt_generator_prompt_area)
+            ctx.elements["prompt-generator-content"].update(self.prompt_generator)
             ctx.elements["bottom"].update(self.bottom_content_manager)
             self.dialog.show()
             self.call_js()
@@ -171,19 +186,34 @@ class basic_prompt(uix.Element):
         with div(id="prompt-generator-images").cls("prompt-generator-images"):
             self.prompt_generator_images_filter()
         with div(id="prompt-generator-options").cls("prompt-generator-options"):
-            self.filter_input = input(id="prompt-generator-filter-input", value=self.filter_text, placeholder = "Filter ...").cls("prompt-generator-filter-input").on("input", self.on_filter_change)
-            with col(id="prompt-generator-types").cls("prompt-generator-types"):
-                self.prompt_generator_types()
-            with col().cls("hall").style("justify-content","flex-end"):
-                imagecard(id="ref-image", imagesrc="/manual_api/prompt_image/ref-image.png", textstr="Reference Image").style("pointer-events","none")
+            with col().style("height","fit-content"):
+                self.filter_input = input(id="prompt-generator-filter-input", value=self.filter_text, placeholder = "Filter ...").cls("prompt-generator-filter-input").on("input", self.on_filter_change)
+                with col(id="prompt-generator-types").cls("prompt-generator-types"):
+                    self.prompt_generator_types()
+            with col().cls("ref-container"):
+                with row().style("height","fit-content").style("gap","10px"):                        
+                    for ref_image in self.ref_images:
+                        if ref_image == self.selected_ref_image_data["ref_image_url"]:
+                            image(value=ref_image+"?is-atr=m").style("border:1px solid black;outline: 2px solid white;").cls("ref-image")
+                        else:
+                            image(value=ref_image+"?is-atr=m").cls("ref-image").on("click", lambda ctx, id, value, ref_image=ref_image: self.on_ref_image_click(ctx, id, ref_image))
+                    # with button("","prev-ref-image").on("click", self.prev).style("gap","10px").style("align-items","center"):
+                    #     icon("fa-solid fa-arrow-left")
+                    #     text("Previous")
+                    # with button("","next-ref-image").on("click", self.next).style("justify-content","flex-end").style("align-items","center").style("gap","10px"):
+                    #     text("Next")
+                    #     icon("fa-solid fa-arrow-right")
+                self.ref_image = imagecard(id="ref-image", imagesrc=self.selected_ref_image_data["ref_image_url"], textstr="Reference Image").style("pointer-events","none").cls("hall").style("display","flex")
 
     def on_dialog_close(self,ctx, id, value):
+        self.is_dialog_open = False
+        self.call_js()
         self.set_bottom_content(ctx, id, "Examples")
 
     def prompt_generator_types(self):
         with div() as types:
             print(self.prompt_generator_type)
-            for prompt_generator_data in self.prompt_generator_datas:
+            for prompt_generator_data in self.selected_ref_image_data["datas"]:
                 filtered_options = []
                 for option in prompt_generator_data["options"]:
                     if option["name"] not in self.texts:
@@ -193,6 +223,7 @@ class basic_prompt(uix.Element):
 
                 if filtered_options:
                     button_label = prompt_generator_data["title"]
+                    print(button_label)
                     len_filtered_options = " - ["+str(len(filtered_options))+"]"
 
                     if self.prompt_generator_type == prompt_generator_data["title"]:
@@ -204,7 +235,7 @@ class basic_prompt(uix.Element):
         return types
 
     def prompt_generator_images_filter(self):
-        for prompt_generator_data in self.prompt_generator_datas:
+        for prompt_generator_data in self.selected_ref_image_data["datas"]:
             if self.prompt_generator_type == prompt_generator_data["title"]:
                 # Sort the options alphabetically by name
                 sorted_options = sorted(prompt_generator_data["options"], key=lambda x: x["name"])
@@ -212,7 +243,7 @@ class basic_prompt(uix.Element):
                     textstr = option["name"]
                     if textstr not in self.texts: 
                         if self.filter_text == "" or self.filter_text in textstr.lower() or self.filter_text in textstr.upper() or self.filter_text in textstr:   
-                            imagecard(id=textstr, imagesrc=option["image"], textstr=textstr).cls("prompt-generator-card to-remove").on("click", lambda ctx, id, value, textstr=textstr: self.pop_image(ctx, id, textstr))
+                            imagecard(id=textstr, imagesrc=option["image"], textstr=textstr).cls("prompt-generator-card").on("click", lambda ctx, id, value, textstr=textstr: self.pop_image(ctx, id, textstr))
     
     def history(self):
         with col(id="prompt-history").cls("prompt-history") as history:
@@ -226,13 +257,15 @@ class basic_prompt(uix.Element):
         return example
 
     def update_prompt_generator_content(self,ctx, id, value, without_filter=False):
-        if not without_filter:
-            content = ctx.elements["prompt-generator-images"]
-            content.update(self.prompt_generator_images_filter)
-        prompt_types = ctx.elements["prompt-generator-types"]
-        prompt_types.update(self.prompt_generator_types)
-        prompt_generator_content = ctx.elements["prompt-generator-prompt"]
-        prompt_generator_content.update(self.prompt_generator_prompt_area)   
+        if self.is_dialog_open:
+            if not without_filter:
+                if ctx.elements["prompt-generator-images"]:
+                    content = ctx.elements["prompt-generator-images"]
+                    content.update(self.prompt_generator_images_filter)
+            prompt_types = ctx.elements["prompt-generator-types"]
+            prompt_types.update(self.prompt_generator_types)
+            prompt_generator_content = ctx.elements["prompt-generator-prompt"]
+            prompt_generator_content.update(self.prompt_generator_prompt_area) 
 
     def text_comp(self, value):
         text(value, id="prompt-text-" + value).cls("prompt-generator-text").on("click", self.pop)
@@ -278,20 +311,27 @@ class basic_prompt(uix.Element):
     def serve_prompt_image(self, paths, args):
         images_path = f"{cur_path}/images"
 
-        if paths[1] == 'ref-image.png':
-            return uix.send_file(f"{images_path}/ref-image.png")
+        is_atr = args.get("is-atr", False)
 
-        
-        image_path = paths[1] + "/" + paths[2]
+        if paths[-1] == 'ref-image.png':
+            if is_atr:
+                downsized_image_path = f"{cur_path}/resized_images/{paths[1]}/ref-image.png"
+                os.makedirs(os.path.dirname(downsized_image_path), exist_ok=True)
+                if not os.path.exists(downsized_image_path):
+                    self.resize_image(f"{images_path}/{paths[1]}/ref-image.png", downsized_image_path)
+                return uix.send_file(downsized_image_path)
+            else:
+                return uix.send_file(f"{images_path}/{paths[1]}/ref-image.png")
+
+        image_path = paths[1] + "/" + paths[2] + "/" + paths[3]
         full_path = os.path.join(images_path, image_path)
 
+        print("Serving image", full_path)
         if not os.path.exists(full_path):
             return "Image not found" + full_path, 404
         
-        is_atr = args.get("is-atr", False)
-
-
         if is_atr:
+            print("is-atr")
             downsized_image_path = f"{cur_path}/resized_images/{image_path}"
             os.makedirs(os.path.dirname(downsized_image_path), exist_ok=True)
             if not os.path.exists(downsized_image_path):
@@ -299,7 +339,6 @@ class basic_prompt(uix.Element):
             # Serve the downsized image
             return uix.send_file(downsized_image_path)
         else:
-            print("Serving original image", full_path)
             return uix.send_file(full_path)
 
     def resize_image(self, input_path, output_path, size=(300, 300)):
@@ -312,8 +351,36 @@ class basic_prompt(uix.Element):
                 print(e)
         else:
             return "Prompt Generator is not open", 400
-        
 
+    # def next(self, ctx, id, value):
+    #     if self.prompt_generator_datas:
+    #         # Get the current index
+    #         current_index = self.prompt_generator_datas.index(self.selected_ref_image_data)
+    #         next_index = (current_index + 1) % len(self.prompt_generator_datas)
+    #         # Update attributes based on the next index
+    #         self.selected_ref_image_data = self.prompt_generator_datas[next_index]
+    #         self.prompt_generator_type = self.prompt_generator_datas[next_index]["datas"][0]["title"]
+    #         # Call any other methods if needed
+    #         ctx.elements["prompt-generator-content"].update(self.prompt_generator)
+
+    # def prev(self, ctx, id, value):
+    #     if self.prompt_generator_datas:
+    #         # Get the current index
+    #         current_index = self.prompt_generator_datas.index(self.selected_ref_image_data)
+    #         # Calculate the previous index
+    #         prev_index = (current_index - 1) % len(self.prompt_generator_datas)
+    #         # Update attributes based on the previous index
+    #         self.selected_ref_image_data = self.prompt_generator_datas[prev_index]
+    #         self.prompt_generator_type = self.prompt_generator_datas[prev_index]["datas"][0]["title"]
+    #         # Call any other methods if needed
+    #         ctx.elements["prompt-generator-content"].update(self.prompt_generator)
+        
+    def on_ref_image_click(self, ctx, id, value):
+        for ref_image in self.ref_images:
+            if ref_image == value:
+                self.selected_ref_image_data = self.prompt_generator_datas[self.ref_images.index(ref_image)]
+                self.prompt_generator_type = self.selected_ref_image_data["datas"][0]["title"]
+                ctx.elements["prompt-generator-content"].update(self.prompt_generator)
 
     def init(self):
         self.create_resize_api()
