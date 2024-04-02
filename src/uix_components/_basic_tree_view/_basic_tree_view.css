@@ -1,12 +1,9 @@
 
-
 .pure-tree.main-tree {
-  width: 30em;
   display: inline-block;
 }
 
 .pure-tree:not(.main-tree) {
-  width: 100%;
   padding-left: 1.2em;
 }
 
@@ -27,7 +24,6 @@
   flex-direction: row-reverse;
   gap: 5px;
 }
-
 
 .pure-tree label:hover {
   color: var(--background-secondary);
