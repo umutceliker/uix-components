@@ -86,7 +86,7 @@ class basic_prompt(uix.Element):
             })
 
         self.filter_text = ""
-        self.selected_ref_image_data = self.prompt_generator_datas[0]
+        self.selected_ref_image_data = self.prompt_generator_datas[0] if len(self.prompt_generator_datas) > 0 else {}
         self.is_dialog_open = False
         self.options = options
         self.bottom_content_type = "Examples"
