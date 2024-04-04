@@ -1,5 +1,4 @@
 event_handlers["init-fabric"] = function (id, value, event_name) {
-    console.log(value);
     const canvas = new fabric.Canvas(id);
     const rect = new fabric.Rect({
         top: 100,

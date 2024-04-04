@@ -1,6 +1,5 @@
 
 event_handlers["init-seadragon"] = function (id, value, event_name) {
-    console.log("init-seadragon", id, value, event_name);
     let config = value
 
     let viewerConfig = {

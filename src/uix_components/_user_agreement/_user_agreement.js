@@ -1,5 +1,4 @@
 event_handlers["init-contract"] = (id, value, event_name) => {
-    console.log("init-contract", id, value, event_name);
     const contract = document.getElementById(value.contract);
     contract.innerHTML = value.contract_content;
     const terms = document.querySelector(".terms-and-conditions");

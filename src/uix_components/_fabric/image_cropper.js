@@ -20,7 +20,6 @@ event_handlers["init-image-cropper"] = function (id, value, event_name) {
   document.getElementById(id).latestCombinedImage = null;
   document.getElementById(id).moveRates = { x: 1, y: 1 };
   document.getElementById(id).lastAxisMoved = 'x';
-  console.log(parentElement);
 
   canvas.on('object:added', function(event) {
     // Check if the added object is an image
@@ -95,7 +94,6 @@ event_handlers["init-image-cropper"] = function (id, value, event_name) {
 
   event_handlers["repeater-checkbox"](id, value, event_name);
   brush_element_id.addEventListener('change', function (e) {
-    console.log(this.value);
     brushSize = this.value * 2;
     updateAndMoveImage(id, document.getElementById(id), document.getElementById(id).lastAxisMoved, document.getElementById(id).canvas, document.getElementById(input_canvas_id).scale);
   });
