@@ -4,8 +4,6 @@ if (!event_handlers["init-prompt"]) {
         const bottomElement = document.getElementById('bottom');
         const promptElement = document.getElementById(value.promptID);
 
-        console.log("init-prompt", id, value, event_name);
-
         const focusHandler = () => {
             if(bottomElement === null) {
                 return;
@@ -26,7 +24,6 @@ if (!event_handlers["init-prompt"]) {
         const keyupHandler = (e) => {
             if (e.key == 'Delete' || e.key == 'Backspace') {
                 if (inputElement.value === '') {
-                    console.log("prompt", "pop");
                     clientEmit(value.inputID, "prompt", "pop");
                 }
             }
