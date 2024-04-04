@@ -5,7 +5,6 @@ from uix_components._chart_bar.chart_utils import ChartUtils
 
 uix.html.add_script("chart-js","""
     event_handlers["init-chart"] = function (id, value, event_name) {
-        console.log(value);
         let chart = new Chart(id, value);
         elm = document.getElementById(id);
         elm.chart = chart;
