@@ -119,8 +119,6 @@ margin: 0 30px
 .creditcard svg#cardfront,
 .creditcard svg#cardback {
   width: auto;
-  -webkit-box-shadow: 1px 5px 6px 0px black;
-  box-shadow: 1px 5px 6px 0px black;
   border-radius: 22px;
   height: 100%;
 }
@@ -349,7 +347,7 @@ margin: 0 30px
 .creditcard .back {
   position: absolute;
   width: 100%;
-  height: auto;
+  height: 90%;
   display: flex;
   justify-content: center;
   max-width: 400px;
