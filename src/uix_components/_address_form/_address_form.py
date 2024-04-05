@@ -16,6 +16,7 @@ class address_form(uix.Element):
         self.setup_json_files()
         self.city_value = None
         self.counties_value = None
+        self.isCorporate = False
         with div():
             with div(id="myForm").cls("default-address"):
                 with col().cls("address-grid"):
@@ -42,11 +43,11 @@ class address_form(uix.Element):
                     self.default_addressFormat = default_addressFormat
                     with row().style("height", "max-content"):
                         self.city = input(placeholder=T("City"), required=True).on("change", self.input_setter)
-                        self.counties = input(placeholder=T("Region"), required=True).on("change", self.input_setter)
+                        self.region = input(placeholder=T("Region"), required=True).on("change", self.input_setter)
                 with col().cls("address-grid"):
-                    self.address_line1 = textarea(placeholder=T("Full Address"), required=True).style("height","90px").on("change", self.input_setter)
+                    self.address_line1 = input(placeholder=T("Address Line 1 (house number, street name, and suffix)"), required=True).on("change", self.input_setter)
                 with col().cls("address-grid"):
-                    self.address_line2 = input(placeholder=T("Address Line 2"), required=True).on("change", self.input_setter)
+                    self.address_line2 = input(placeholder=T("Address Line 2 (apartment, suite, unit number, room)"), required=True).on("change", self.input_setter)
                 with row().cls("address-grid"):
                     self.personalButton = button(T("Personal")).cls("personal-button").on("click", self.personal_click)
                     self.corporateButton = button(T("Corporate")).cls("cancel-button").on("click", self.corporate_click)
@@ -59,7 +60,7 @@ class address_form(uix.Element):
                         self.taxOffice = input(placeholder=T("Tax Office")).on("change", self.input_setter)
                         self.eFatura = basic_checkbox(id="efatura", label_text="E-Fatura Mükellefiyim").cls("eFatura-checkbox").style("display", "none")
                 with row().cls("address-grid").style("height", "max-content"):
-                    self.add_button=button("Add Billing Address", id=self.id+"-button").cls("save-button").on("click", self.add_address)
+                    self.add_button=button(id=self.id+"-button",value="Add Billing Address").cls("save-button").on("click", self.add_address)
 
     def setup_json_files(self):
         current_path = os.path.dirname(os.path.realpath(__file__))
@@ -74,12 +75,13 @@ class address_form(uix.Element):
         self.countries = json.loads(country)
 
     def input_setter(self, ctx, id, value):
-        ctx.elements[id].value = value
+        ctx.elements[id].value = value.upper()
 
     def datalist_setter(self, input, value):
         input.value = value
 
     def personal_click(self, ctx, id, value):
+        self.isCorporate = False
         self.corporate.classes = ['col', 'hidden']
         self.corporateButton.set_style("background-color", "var(--background-secondary)")
         self.personalButton.set_style("background-color", "var(--ait)")
@@ -89,6 +91,7 @@ class address_form(uix.Element):
         self.corporate.update()
 
     def corporate_click(self, ctx, id, value):
+        self.isCorporate = True
         self.corporate.classes = ['col', 'address-grid']
         self.corporate.remove_class("hidden")
         self.corporate.style("gap", "10px")
@@ -107,7 +110,7 @@ class address_form(uix.Element):
             self.default_addressFormat.remove_class("hidden")
             self.eFatura.style("display", "none")
             self.city.attrs["required"] = False
-            self.counties.attrs["required"] = False
+            self.region.attrs["required"] = False
             self.neighborhoods.input.attrs["required"] = False
             self.corporate.update()
             self.datalist_setter(self.country, value)
@@ -125,18 +128,20 @@ class address_form(uix.Element):
             self.datalist_setter(self.country, value)
 
     def get_counties(self, ctx, id, value):
+        value_=value.upper()
         self.city.value = value
-        self.selected_city_counties = self.address_data.get(value, [])
+        self.selected_city_counties = self.address_data.get(value_, [])
         countiesData = {key: key for key in self.selected_city_counties}
         content = ctx.elements["counties"]
-        self.datalist_setter(self.city,value)
+        self.datalist_setter(self.city,value_)
         with content:
             self.counties = basic_datalist(name="", id="counties", placeholder=T("Select County"), required=True, options=countiesData, callback=self.get_neighborhoods)
         content.update()
         
     def get_neighborhoods(self, ctx, id, value):
+        value_ = value.upper()
         if self.selected_city_counties != None:
-            self.selected_city_neighborhoods = self.selected_city_counties.get(value, [])
+            self.selected_city_neighborhoods = self.selected_city_counties.get(value_, [])
             neighborhoodsData = {key: key for key in self.selected_city_neighborhoods}
             content = ctx.elements["neighborhoods"]
             self.datalist_setter(self.counties,value)
@@ -146,7 +151,7 @@ class address_form(uix.Element):
 
     def set_neighborhoods(self, ctx, id, value):
         self.neighborhoods.value = value
-        
+
     def add_address(self, ctx, id, value):
         address_form_data = {
             "name": self.name.value,
@@ -154,10 +159,12 @@ class address_form(uix.Element):
             "zipCode": self.zip_code.value,
             "country": self.country.value,
             "city": self.city.value,
-            "county": self.counties.value,
+            "county": self.counties_datalist.value,
+            "region": self.region.value,
             "neighborhood": self.neighborhoods.value,
             "address_line_1": self.address_line1.value,
             "address_line_2": self.address_line2.value,
+            "corporate": self.isCorporate,
             "vkn": self.vkn.value,
             "companyName": self.companyName.value,
             "taxOffice": self.taxOffice.value,
