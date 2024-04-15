@@ -6,7 +6,6 @@ grid-column: 2 / 3;
 grid-row: 1;
 height: 60vh;
 margin: 0 auto;
-max-width: 800px;
 padding: 2em;
 overflow-y: scroll;
 border-radius: 5px 5px 0px 0px;

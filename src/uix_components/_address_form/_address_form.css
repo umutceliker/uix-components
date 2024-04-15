@@ -6,54 +6,56 @@
     justify-content: center;
 }
 
-.form-content .address-grid:first-of-type {
+.turkey-address .address-grid:first-of-type {
     grid-area: name;
 }
 
-.form-content .address-grid:nth-of-type(2) {
+.turkey-address .address-grid:nth-of-type(2) {
     grid-area: surname;
 }
 
-.form-content .address-grid:nth-of-type(3) {
-    grid-area: phone;
+.turkey-address .address-grid:nth-of-type(3) {
+    grid-area: zipCode;
 }
 
-.form-content .address-grid:nth-of-type(4) {
+.turkey-address .address-grid:nth-of-type(4) {
     grid-area: country;
 }
 
-.form-content .address-grid:nth-of-type(5) {
+.turkey-address .address-grid:nth-of-type(5) {
     grid-area: hiddenAddress;
 }
-
-.form-content .address-grid:nth-of-type(6) {
-    grid-area: address;
+.turkey-address .address-grid:nth-of-type(6) {
+    grid-area: defaultAddress;
+}
+.turkey-address .address-grid:nth-of-type(7) {
+    grid-area: address_line1;
 }
 
-.form-content .address-grid:nth-of-type(7) {
-    grid-area: addressTitle;
+.turkey-address .address-grid:nth-of-type(8) {
+    grid-area: address_line2;
 }
 
-.form-content .address-grid:nth-of-type(8) {
+.turkey-address .address-grid:nth-of-type(9) {
     grid-area: button;
 }
-.form-content .address-grid:nth-of-type(9) {
+.turkey-address .address-grid:nth-of-type(10) {
     grid-area: corporate;
 }
-.form-content .address-grid:nth-of-type(10) {
+.turkey-address .address-grid:nth-of-type(11) {
     grid-area: add;
 }
 
-.form-content {
+.turkey-address {
     gap: 10px;
     display: grid;
     grid-template-columns: 1fr 1fr !important; /* Updated to use fractional units */
     grid-template-areas:
         "name surname"
-        "phone country"
+        "zipCode country"
         "hiddenAddress hiddenAddress"
-        "address address"
-        "addressTitle addressTitle"
+        "address_line1 address_line1"
+        "address_line2 address_line2"
         "button button"
         "corporate corporate"
         "add add"; /* Adjusted the grid areas */
@@ -63,6 +65,68 @@
     border-radius: 0px 12px 12px 0px ;
 }
 
+.default-address .address-grid:first-of-type {
+    grid-area: name;
+}
+
+.default-address .address-grid:nth-of-type(2) {
+    grid-area: surname;
+}
+
+.default-address .address-grid:nth-of-type(3) {
+    grid-area: zipCode;
+}
+
+.default-address .address-grid:nth-of-type(4) {
+    grid-area: country;
+}
+
+.default-address .address-grid:nth-of-type(5) {
+    grid-area: hiddenAddress;
+}
+
+.default-address .address-grid:nth-of-type(6) {
+    grid-area: defaultAddress;
+}
+.default-address .address-grid:nth-of-type(7) {
+    grid-area: address_line1;
+}
+
+.default-address .address-grid:nth-of-type(8) {
+    grid-area: address_line2;
+}
+
+.default-address .address-grid:nth-of-type(9) {
+    grid-area: button;
+}
+
+.default-address .address-grid:nth-of-type(10) {
+    grid-area: corporate;
+}
+
+.default-address .address-grid:nth-of-type(11) {
+    grid-area: add;
+}
+
+
+.default-address {
+    gap: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr !important; /* Updated to use fractional units */
+    grid-template-areas:
+        "name surname"
+        "zipCode country"
+        "defaultAddress defaultAddress"
+        "address_line1 address_line1"
+        "address_line2 address_line2"
+        "button button"
+        "corporate corporate"
+        "add add"; /* Adjusted the grid areas */
+    max-width: 400px;
+    width: 100%; /* Use 100% width instead of max-content */
+    height: 100%;
+    border-radius: 0px 12px 12px 0px ;
+}
 .address-grid select,
 .address-grid input {
     width: 100%; /* Set width to 100% for inputs and selects */
