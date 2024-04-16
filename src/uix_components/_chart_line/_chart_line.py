@@ -60,6 +60,7 @@ class chart_line(uix.Element):
         ChartUtils.set_options(self.chartData, self.options)
         with self:
             self.canvas = canvas(id=self.canvas_id,value = self.chartData)
+        self.init()
         self.update()
 
 title = "Chart Line"
