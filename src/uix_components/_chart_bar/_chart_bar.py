@@ -60,7 +60,9 @@ class chart_bar(uix.Element):
         ChartUtils.dataset_importer(self.chartData, value, self.labels)
         with self:
             self.canvas = canvas(id=self.canvas_id,value = self.chartData)
+        self.init()    
         self.update()
+        
 
 title = "Chart Bar"
 description = """
