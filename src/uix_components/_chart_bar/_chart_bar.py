@@ -58,6 +58,7 @@ class chart_bar(uix.Element):
     @value.setter
     def value(self, value):
         ChartUtils.dataset_importer(self.chartData, value, self.labels)
+        ChartUtils.set_options(self.chartData, self.options)
         with self:
             self.canvas = canvas(id=self.canvas_id,value = self.chartData)
         self.init()    

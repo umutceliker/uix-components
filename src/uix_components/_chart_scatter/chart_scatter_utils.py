@@ -8,6 +8,7 @@ class ChartUtils:
                 "responsive": ChartUtils.set_responsive,
                 "legend_pos": ChartUtils.set_legend_pos,
                 "title": ChartUtils.set_title,
+                "dataset_labels": ChartUtils.set_dataset_labels,
             }
             func = switcher.get(key, lambda: "Invalid option")
             func(chart_data, value)
@@ -27,6 +28,13 @@ class ChartUtils:
     @staticmethod
     def set_title(chart_data, value):
         chart_data["options"]["plugins"]["title"] = {"display": True, "text": value}
+
+    @staticmethod
+    def set_dataset_labels(chart_data, value):
+        dataset_length = len(chart_data["data"]["datasets"])
+        for index in range(dataset_length):
+            if len(value) > index:
+                chart_data["data"]["datasets"][index]["label"] = value[index]
    
     @staticmethod
     def dataset_importer(chart_data, value):

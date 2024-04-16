@@ -9,6 +9,7 @@ class ChartUtils:
                 "legend_pos": ChartUtils.set_legend_pos,
                 "title": ChartUtils.set_title,
                 "backgroundColor": ChartUtils.set_background_color,
+                "dataset_labels": ChartUtils.set_dataset_labels,
             }
             func = switcher.get(key, lambda: "Invalid option")
             func(chart_data, value)
@@ -34,6 +35,13 @@ class ChartUtils:
         dataset_length = len(chart_data["data"]["datasets"])
         for i in range(dataset_length):
             chart_data["data"]["datasets"][i]["backgroundColor"] = value
+
+    @staticmethod
+    def set_dataset_labels(chart_data, value):
+        dataset_length = len(chart_data["data"]["datasets"])
+        for index in range(dataset_length):
+            if len(value) > index:
+                chart_data["data"]["datasets"][index]["label"] = value[index]
     
     @staticmethod
     def dataset_importer(chart_data, value, labels=None):
