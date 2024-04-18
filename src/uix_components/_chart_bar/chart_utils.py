@@ -9,6 +9,9 @@ class ChartUtils:
                 "legend_pos": ChartUtils.set_legend_pos,
                 "title": ChartUtils.set_title,
                 "dataset_labels": ChartUtils.set_dataset_labels,
+                "dataset_background_colors": ChartUtils.set_dataset_background_colors,
+                "dataset_border_colors": ChartUtils.set_dataset_border_colors,
+                "dataset_hover_colors": ChartUtils.set_dataset_hover_colors,
             }
             func = switcher.get(key, lambda: "Invalid option")
             func(chart_data, value)
@@ -26,6 +29,27 @@ class ChartUtils:
         for index in range(dataset_length):
             if len(value) > index:
                 chart_data["data"]["datasets"][index]["label"] = value[index]
+
+    @staticmethod
+    def set_dataset_background_colors(chart_data, value):
+        dataset_length = len(chart_data["data"]["datasets"])
+        for index in range(dataset_length):
+            if len(value) > index:
+                chart_data["data"]["datasets"][index]["backgroundColor"] = value[index]
+
+    @staticmethod
+    def set_dataset_border_colors(chart_data, value):
+        dataset_length = len(chart_data["data"]["datasets"])
+        for index in range(dataset_length):
+            if len(value) > index:
+                chart_data["data"]["datasets"][index]["borderColor"] = value[index]
+
+    @staticmethod
+    def set_dataset_hover_colors(chart_data, value):
+        dataset_length = len(chart_data["data"]["datasets"])
+        for index in range(dataset_length):
+            if len(value) > index:
+                chart_data["data"]["datasets"][index]["hoverBackgroundColor"] = value[index]
             
     @staticmethod
     def set_legend_pos(chart_data, value):
@@ -67,14 +91,13 @@ class ChartUtils:
     def add_dataset(chart_data, data, index):
         random_color = np.random.randint(0, 255, 3)
         random_background_color = f"rgba({random_color[0]},{random_color[1]},{random_color[2]},0.2)"
-        random_hover_background_color = f"rgba({random_color[0]},{random_color[1]},{random_color[2]},0.4)"
-        random_hover_border_color = f"rgba({random_color[0]},{random_color[1]},{random_color[2]},1)"      
+        random_hover_background_color = f"rgb({random_color[0]},{random_color[1]},{random_color[2]},0.6)"
+        random_border_color = f"rgb({random_color[0]},{random_color[1]},{random_color[2]})"      
         chart_data["data"]["datasets"].append({
             "label": f"{index+1}. Dataset",
             "backgroundColor": random_background_color,
-            "borderColor": "rgba(55,199,132,1)",
+            "borderColor": random_border_color,
             "borderWidth": 2,
             "hoverBackgroundColor": random_hover_background_color,
-            "hoverBorderColor": random_hover_border_color,
             "data": data,
         })
