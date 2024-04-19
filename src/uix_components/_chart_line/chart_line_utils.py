@@ -10,6 +10,7 @@ class ChartUtils:
                 "title": ChartUtils.set_title,
                 "tension": ChartUtils.set_tension,
                 "dataset_labels": ChartUtils.set_dataset_labels,
+                "dataset_border_colors": ChartUtils.set_dataset_border_colors,
             }
             func = switcher.get(key, lambda: "Invalid option")
             func(chart_data, value)
@@ -42,6 +43,13 @@ class ChartUtils:
         dataset_length = len(chart_data["data"]["datasets"])
         for i in range(dataset_length):
             chart_data["data"]["datasets"][i]["tension"] = value
+
+    @staticmethod
+    def set_dataset_border_colors(chart_data, value):
+        dataset_length = len(chart_data["data"]["datasets"])
+        for index in range(dataset_length):
+            if len(value) > index:
+                chart_data["data"]["datasets"][index]["borderColor"] = value[index]
     
     @staticmethod
     def dataset_importer(chart_data, value, labels=None):
