@@ -85,9 +85,10 @@ class address_form(uix.Element):
         self.corporate.classes = ['col', 'hidden']
         self.corporateButton.set_style("background-color", "var(--background-secondary)")
         self.personalButton.set_style("background-color", "var(--ait)")
-        self.vkn.attrs["required"] = False
-        self.companyName.attrs["required"] = False
-        self.taxOffice.attrs["required"] = False
+        self.vkn.value = ""
+        self.companyName.value = ""
+        self.taxOffice.value = ""
+        self.eFatura.checkbox.value = False
         self.corporate.update()
 
     def corporate_click(self, ctx, id, value):
