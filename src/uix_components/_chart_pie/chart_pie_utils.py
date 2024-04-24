@@ -51,7 +51,8 @@ class ChartUtils:
             chart_data["data"]["datasets"].clear()
             for val in value.values():
                 if isinstance(val, dict):
-                    ChartUtils.add_dataset(chart_data, val, dimension)
+                    dataset_label = (list(value.keys())[dimension])
+                    ChartUtils.add_dataset(chart_data, val, dataset_label)
                     dimension += 1
                 else:
                     ChartUtils.add_dataset(chart_data, value, dimension)
@@ -71,14 +72,14 @@ class ChartUtils:
                 chart_data["data"]["labels"] = labels
 
     @staticmethod
-    def add_dataset(chart_data, data, index):
+    def add_dataset(chart_data, data, dataset_label):
         data_length = len(data)
         random_background_color = []
         for i in range(data_length):
             random_color = np.random.randint(0, 255, 3)
             random_background_color.append(f"rgb({random_color[0]}, {random_color[1]}, {random_color[2]}")
         chart_data["data"]["datasets"].append({
-            "label": f"{index+1}. Dataset",
+            "label": f"{dataset_label+1}. Dataset" if isinstance(dataset_label, int) else dataset_label,
             "backgroundColor": random_background_color,
             "hoverOffset": 4,
             "data": data,
