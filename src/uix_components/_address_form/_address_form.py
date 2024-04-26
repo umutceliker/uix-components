@@ -60,7 +60,7 @@ class address_form(uix.Element):
                         self.taxOffice = input(placeholder=T("Tax Office")).on("change", self.input_setter)
                         self.eFatura = basic_checkbox(id="efatura", label_text="E-Fatura Mükellefiyim").cls("eFatura-checkbox").style("display", "none")
                 with row().cls("address-grid").style("height", "max-content"):
-                    self.add_button=button(id=self.id+"-button",value="Add Billing Address").cls("save-button").on("click", self.add_address)
+                    self.add_button=button(id=self.id+"-button",value=T("Add Billing Address")).cls("save-button").on("click", self.add_address)
 
     def setup_json_files(self):
         current_path = os.path.dirname(os.path.realpath(__file__))
@@ -85,9 +85,10 @@ class address_form(uix.Element):
         self.corporate.classes = ['col', 'hidden']
         self.corporateButton.set_style("background-color", "var(--background-secondary)")
         self.personalButton.set_style("background-color", "var(--ait)")
-        self.vkn.attrs["required"] = False
-        self.companyName.attrs["required"] = False
-        self.taxOffice.attrs["required"] = False
+        self.vkn.value = ""
+        self.companyName.value = ""
+        self.taxOffice.value = ""
+        self.eFatura.checkbox.value = False
         self.corporate.update()
 
     def corporate_click(self, ctx, id, value):
