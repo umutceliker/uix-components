@@ -51,7 +51,7 @@ def get_image_data(folder_path):
 
 image_data = get_image_data(f"{cur_path}/images")
 
-prompt_json = open(f"{cur_path}/prompt.json", "r")
+prompt_json = open(f"{cur_path}/prompt.json", "r",encoding="utf-8")
 prompt_test = prompt_json.read()
 examples = json.loads(prompt_test)
 
