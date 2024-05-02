@@ -1,6 +1,7 @@
 import os
 import io
 import uix
+from uix import T
 from uix.elements import row,button,div
 
 uix.html.add_css_file("_credit_card.css",__file__)
@@ -27,7 +28,7 @@ class credit_card(uix.Element):
                     self.creditcard=creditcard
                     with div(id="add_card_div").cls("field-container") as add_card_div:
                         self.add_card_div=add_card_div
-                        button("Add Card",id="payment-button",type="submit").cls("payment-button").on("add_card", self.callback)
+                        button(T("Add Card"),id="payment-button",type="submit").cls("payment-button").on("add_card", self.callback)
                 
     def init(self):
         self.session.queue_for_send(self.id,{
