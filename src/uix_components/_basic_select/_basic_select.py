@@ -17,9 +17,9 @@ class basic_select(select):
             if type(self.options) == list:
                 for _option in self.options:
                     if _option["isSelect"] == True:
-                        option(id=_option['id'], value=_option['value']).selected()
+                        option(id=_option['id'], value=_option['id'], text=_option['value']).selected()
                     else:
-                        option(id=_option['id'], value=_option['value'])
+                        option(id=_option['id'], value=_option['id'], text=_option['value'])
             else:
                 for key, value in self.options.items():
                     if value["isSelect"] == True:
