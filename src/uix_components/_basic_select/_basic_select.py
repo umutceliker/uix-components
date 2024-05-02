@@ -23,9 +23,9 @@ class basic_select(select):
             else:
                 for key, value in self.options.items():
                     if value["isSelect"] == True:
-                        option(value=key, id=value["id"]).selected()
+                        option(value=key, id=value["id"], text=value["value"]).selected()
                     else:
-                        option(value=key, id=value["id"])
+                        option(value=key, id=value["id"], text=value["value"])
 
     def on_change(self, ctx, id, value):
         self.value = value
