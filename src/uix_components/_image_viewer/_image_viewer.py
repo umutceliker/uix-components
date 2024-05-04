@@ -3,7 +3,9 @@ from uuid import uuid4
 import uix
 import os
 from PIL import Image
-uix.html.add_script_source('seadragon-js-lib', 'openseadragon.min.js',localpath=__file__,beforeMain=False)
+uix.app.add_static_route("seadragon", os.path.dirname(__file__))
+uix.html.add_header_item("seadragon", '<script src="/seadragon/openseadragon.min.js"></script>')
+#uix.html.add_script_source('seadragon-js-lib', 'openseadragon.min.js',localpath=__file__,beforeMain=False)
 uix.html.add_script_source('seadragon', 'seadragon.js',localpath=__file__, beforeMain=False)
 icons_path = os.path.join(os.path.dirname(__file__), "icons")
 
