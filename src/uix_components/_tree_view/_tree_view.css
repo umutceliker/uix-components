@@ -1,6 +1,7 @@
 .tree{
     --spacing : 1.5rem;
     --radius  : 8px;
+    padding: 0px;
   }
   
   .tree li{
@@ -79,13 +80,13 @@
     content: '';
     display: block;
     position: absolute;
-    top: calc(var(--spacing) / 2 - (var(--radius) / 2));
+    top: calc((var(--spacing) / 2 - (var(--radius) / 2)));
     left: calc(var(--spacing) - (var(--radius) / 2));
     width: calc(var(--radius));
     height: calc(var(--radius));
     border-radius: 50%;
-    background: var(--ait);
-  
+    background: white;
+    border: 1px solid white;
   }
   
   /* last child olarak son elemanlar gözüküyor fakat son elemanların ilki ul gibi davranıyor */
