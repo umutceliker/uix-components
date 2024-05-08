@@ -4,12 +4,13 @@ import uix
 uix.html.add_css_file("_tree_view.css",__file__)
 
 class tree_view(uix.Element):
-    def __init__(self, id, data, callback=None):
+    def __init__(self, id, data, callback=None, selected = None):
         super().__init__(id=id)
         if data is None:
             data = {}
         self.titles = list(data.keys()) 
         self.callbak = callback
+        self.selected = selected
         with self:
             with unorderedlist().cls("tree"):
                 for main_title, items in data.items():
@@ -19,7 +20,7 @@ class tree_view(uix.Element):
     def create_tree(self, key, data):
         with listitem(id="li-" + key.lower()):
 
-            with details().cls("details") as detail:
+            with details(id="details-" + key).cls("details") as detail:
                 if self.titles[0] == key:
                     detail.attrs["open"] = "True"
                 summary(value=key.title()) 
@@ -28,7 +29,11 @@ class tree_view(uix.Element):
                     with unorderedlist():
                         for item in data:
                             with listitem().cls("last-child"):
-                                label(value=item).on("click", self.click_label).style("font-size","medium")
+                                if self.selected and item == self.selected:
+                                    label_ = label(id=item,value=item).cls("selected-label")
+                                else:
+                                    label_ = label(id=item,value=item)
+                                label_.on("click", self.click_label).style("font-size","medium")
                 else: 
                     with unorderedlist():
                         for sub_key, sub_data in data.items():
@@ -49,12 +54,9 @@ description="""
 | id                    | tree_view elementinin id'si                          |
 | data                  | ağaç yapısının oluşturulması için gerekli veri yapısı|
 | callback              | Label'a tıklandığında çalışacak fonksiyon            |
+| selected              | Önceden seçili olmasını istediğiniz elemanın değeri  |
 """
 sample="""
-from uix_components._tree_view._tree_view import title, description, sample as code 
-from uix_components import tree_view
-from uix.elements import text, div
-
 data = {
     "Examples": {
         "Styles": {
@@ -68,8 +70,15 @@ data = {
 def select_label(ctx, id, value):
     ctx.elements["output"].value = f'Selected Value: {value}'
 
+def open_components():
+    ctx = context.session.context
+    # Açık olmasını istediğiniz details elementinin id'si
+    # Default olarak "details-" ile başlar
+    ctx.elements["details-Components"].attrs["open"] = "True"
+
 def tree_view_example():
     with div().cls("gap"):
         tree_view(id="tree_view_example",data=data, callback= select_label)
         text("Selected Value:", id="output")
+        open_components()
 """
