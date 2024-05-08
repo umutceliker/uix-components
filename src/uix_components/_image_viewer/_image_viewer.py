@@ -12,7 +12,7 @@ icons_path = os.path.join(os.path.dirname(__file__), "icons")
 
 class image_viewer(uix.Element):
     def __init__(self, id = None, value=None, buttonGroup={}, zoom=False, size=(500,500)):
-        super().__init__(id=id, value=None)
+        super().__init__(id=id, value=value)
         self.tag = "div"
         self.value_name = None
         self.buttonGroup = buttonGroup
@@ -26,11 +26,10 @@ class image_viewer(uix.Element):
             self.size(*size)
 
         self.has_PIL_image = False
-        self.value = value
-        
-
+        self.set_later = True
     def init(self):
         self.session.queue_for_send(self.id, self.config, "init-seadragon")
+        self.value = self._value
 
     @property
     def value(self):
@@ -46,8 +45,12 @@ class image_viewer(uix.Element):
             self._value = value
             
         if self._value is not None:
-            self.session.send(self.id, self.value_to_command("open",{"type": "image","url": self._value}), "seadragon")
-    
+            if self.set_later:
+                self.session.queue_for_send(self.id, self.value_to_command("open",{"type": "image","url": self._value}), "seadragon")
+            else:
+                self.session.send(self.id, self.value_to_command("open",{"type": "image","url": self._value}), "seadragon")
+        self.set_later = False
+
     def __del__(self):
         if self.has_PIL_image:
             uix.app.files[self.id] = None
