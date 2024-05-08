@@ -1,0 +1,153 @@
+.tree{
+    --spacing : 1.5rem;
+    --radius  : 8px;
+    padding: 0px;
+  }
+  
+  .tree li{
+    display      : block;
+    position     : relative;
+    padding-left : calc(2 * var(--spacing) - var(--radius) - 2px);
+    
+  }
+  
+  .tree ul{
+    margin-left  : calc(var(--radius) - var(--spacing));
+    padding-left : 0;
+  }
+  
+  .tree ul li{
+    border-left : 2px solid #ddd;
+  }
+  
+  .tree ul li:last-child{
+    border-color : transparent;
+  }
+  
+  .tree ul li::before{
+    content      : '';
+    display      : block;
+    position     : absolute;
+    top          : calc(var(--spacing) / -2);
+    left         : -2px;
+    width        : calc(var(--spacing) + (-4px));
+    height       : calc(var(--spacing));
+    border       : solid #ddd;
+    border-width : 0 0 2px 2px;
+  }
+  
+.tree summary{
+    padding: 0px;
+    display: block;
+    cursor: pointer;
+    font-size: medium;
+    background-color: transparent;
+  }
+  
+  .tree summary::marker,
+  .tree summary::-webkit-details-marker{
+    display : none;
+  }
+  
+  .tree summary:focus{
+    outline : none;
+  }
+  
+  .tree summary:focus-visible{
+    outline : 1px dotted #000;
+  }
+  
+  .tree ul::after,
+  .tree summary::before{
+    content       : '';
+    display       : block;
+    position      : absolute;
+    top           : calc(var(--spacing) / 2 - var(--radius));
+    left          : calc(var(--spacing) - var(--radius) - 1px);
+    width         : calc(2 * var(--radius));
+    height        : calc(2 * var(--radius));
+    border-radius : 50%;
+    background    : var(--border-color);
+  
+  }
+  
+  .tree ul li label:hover{
+    color: var(--ait);
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .selected-label{
+    font-weight: bold;
+    font-size: 20px !important;
+  }
+
+  .tree ul li label:hover::before{
+    content: '';
+    display: block;
+    position: absolute;
+    top: calc((var(--spacing) / 2 - (var(--radius) / 2)));
+    left: calc(var(--spacing) - (var(--radius) / 2));
+    width: calc(var(--radius));
+    height: calc(var(--radius));
+    border-radius: 50%;
+    background: white;
+    border: 1px solid white;
+  }
+  
+  /* last child olarak son elemanlar gözüküyor fakat son elemanların ilki ul gibi davranıyor */
+  /* bu yüzden ikisinede css eklendi */
+  /* last child start*/
+  .tree ul li::after,
+  .tree summary:last-child::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: calc(var(--spacing) / 2 - (var(--radius) / 2));
+    left: calc(var(--spacing) - (var(--radius) / 2) - 1px);
+    width: calc(var(--radius));
+    height: calc(var(--radius));
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid white;
+  }
+  
+  .tree li:last-child::after,
+  .tree summary:last-child::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: calc(var(--spacing) / 2 - (var(--radius) / 2));
+    left: calc(var(--spacing) - (var(--radius) / 2) - 1px);
+    width: calc(var(--radius));
+    height: calc(var(--radius));
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid white;
+  }
+  /* last child end */
+  .tree summary::before {
+    z-index: 1;
+    background: var(--ait) url('https://img.icons8.com/material-rounded/24/ffffff/plus--v1.png'); 
+    content: ''; 
+    display: inline-block;
+    width: 16px; 
+    height: 16px; 
+    background-size: cover; 
+  }
+  .details{
+    overflow: visible;
+    min-height: auto !important;
+  }
+
+  .tree details[open] > summary::before{
+    background-image: url('https://img.icons8.com/material-rounded/24/ffffff/minus.png'); 
+    content: ''; 
+    display: inline-block;
+    width: 16px; 
+    height: 16px; 
+    background-size: cover;
+    z-index: 1;
+    overflow: visible;
+  }
+  
