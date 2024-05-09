@@ -13,9 +13,6 @@ uix.html.add_script_source(id="add_card_js",script="_add_card.js",beforeMain=Fal
 path=os.path.join(os.path.dirname(os.path.dirname(__file__)), "_credit_card")
 uix.app.add_static_route("credit_card",path)
 
-with io.open(os.path.join(path,"_credit_card.html"), mode="r", encoding="utf-8") as f:
-     html_content=f.read()
-     f.close
 
 class credit_card(uix.Element):
     def __init__(self, value, id = None, callback=None):
@@ -23,6 +20,9 @@ class credit_card(uix.Element):
             self.path=path
             self.callback=callback
             self.size("100%","100%")
+            with io.open(os.path.join(path,"_credit_card.html"), mode="r", encoding="utf-8") as f:
+                self.html_content=f.read()
+                f.close
             with self:
                 with row("",id="credit-cards").cls("credit-card-row") as creditcard:
                     self.creditcard=creditcard
@@ -33,7 +33,7 @@ class credit_card(uix.Element):
     def init(self):
         self.session.queue_for_send(self.id,{
             'creditcard': self.creditcard.id,
-            'html_content': html_content,
+            'html_content': self.html_content,
             'add_card_div': self.add_card_div.id
             }, 
 
