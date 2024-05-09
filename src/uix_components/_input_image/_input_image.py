@@ -39,6 +39,7 @@ class input_image(uix.Element):
         self.on_upload_done = callback
         self.cls("wall hall input")
         self.style("position","relative")
+        self.image_size_warning = None
 
         with self:
             self.file=file(id=self.file_id,accept="image/png, image/jpeg",multiple=False,callback=self.file_callback).cls("file-input")
@@ -82,8 +83,11 @@ class input_image(uix.Element):
     def upload_callback(self,ctx, id, data, status):
         if status == "done":
             if self.on_upload_done:
-                self.on_upload_done(ctx, data, self.filename)
-                self.show_image()
+                self.image_size_warning= self.on_upload_done(ctx, data, self.filename)
+                if self.image_size_warning:
+                    self.hide_image()
+                else:
+                    self.show_image()
             else:
                 self.show_image()
 
