@@ -4,7 +4,7 @@ import uix
 uix.html.add_css_file("_tree_view.css",__file__)
 
 class tree_view(uix.Element):
-    def __init__(self, id, data, callback=None, selected = None):
+    def __init__(self, id=None, data=None, callback=None, selected = None):
         super().__init__(id=id)
         if data is None:
             data = {}
@@ -28,12 +28,22 @@ class tree_view(uix.Element):
                 if isinstance(data, list):
                     with unorderedlist():
                         for item in data:
-                            with listitem().cls("last-child"):
-                                if self.selected and item == self.selected:
-                                    label_ = label(id=item,value=item).cls("selected-label")
-                                else:
-                                    label_ = label(id=item,value=item)
-                                label_.on("click", self.click_label).style("font-size","medium")
+                            if isinstance(item, dict):
+                                for name, id in item.items():
+                                    with listitem().cls("last-child"):
+                                        if self.selected and id == self.selected:
+                                            label_ = label(id = id,value = name).cls("selected-label")
+                                        else:
+                                            label_ = label(id = id,value = name)
+                            else:
+                                with listitem().cls("last-child"):
+                                    if self.selected and item == self.selected:
+                                        label_ = label(id=item,value=item).cls("selected-label")
+                                    else:
+                                        label_ = label(id=item,value=item)
+                            label_.style("font-size","medium")
+                            if self.callbak:    
+                                label_.on("click", self.click_label)
                 else: 
                     with unorderedlist():
                         for sub_key, sub_data in data.items():
@@ -41,6 +51,7 @@ class tree_view(uix.Element):
 
     def click_label(self, ctx, id, value):
         self.callbak(ctx, id, value)
+
 
 
 title="Tree View"
