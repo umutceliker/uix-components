@@ -2,7 +2,7 @@ import uix
 from uix.elements import table, th, tr, td, thead, tbody
 
 class basic_table(uix.Element):
-    def __init__(self, id=None, headers=None, data=None):
+    def __init__(self, id=None, headers=[], data=[]):
         super().__init__(id=id)
             
         self.style("overflow: auto;")
@@ -13,11 +13,10 @@ class basic_table(uix.Element):
                         for header in headers:
                             th(value=header)
                 with tbody():
-                    if data:
-                        for row in data:
-                            with tr():
-                                for cell in row:
-                                    td(value=cell)
+                    for row in data:
+                        with tr():
+                            for cell in row:
+                                td(value=cell)
 
 title="Basic Table"
 description="""
