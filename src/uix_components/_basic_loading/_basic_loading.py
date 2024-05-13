@@ -1,7 +1,7 @@
 import uix
 from uix.elements import text, image, div 
 
-uix.html.add_css("loading-css", """
+uix.html.add_css("loading-component-css", """
 @keyframes loading-bar {
     0% {
         width: 0%;
@@ -26,44 +26,37 @@ uix.html.add_css("loading-css", """
     }
 }   
 
-.loading-bar {
-    border-radius: 3px;
-    animation: loading-bar 10000ms ease-in-out forwards, ping-black 1.5s infinite;
+.logo-div {
+    position: absolute;
+    top: 35%;
+    left: 40%;
+    height: 30%;
+    width: 20%;
+}
+                 
+.loading-logo {
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
 }
 
-.ait-search-logo {
-    position: absolute;
-    top: 45%;
-    left: 45%;  
-    }
-
-    hidden {
+.hidden {
     display: none;
-}""")
-
+}
+""")
 class basic_loading(uix.Element):
-    def __init__(self, value = None, id = None):
+    def __init__(self, value = None, id = None, timer = 10):
         super().__init__(value, id = id)
-        
-        self.estimate_time = 10000
-        (
-            self
-                .cls("wall hall")
-                .style("justify-content","flex-start")
-                .style("gap","0")
-                .style("position","relative")
-        )
+        self.cls("wall hall").style("position: relative;")    
 
         with self:
-            with div().cls("hall loading-bar").style("width","0%"):
+            with div().cls("hall")as loading:
+                loading.style(f"animation: loading-bar {timer}s ease-in-out forwards, ping-black 1.5s infinite; border-radius: 3px;")
                 pass
-            with div().style("position","absolute").style("top","0").style("left","70%"):
-                text(
-                    value = "Estimated Time: " + str(self.estimate_time) + " ms"
-                ).cls("loading-title")
-
-            with div().cls("ait-search-logo"):
-                image(value="https://aitools.ait.com.tr/AIT_AI_LOGO.png").cls("logo").style("height","100px")
+            with div().style("position: absolute; top: .2rem; right: 1rem"):
+                text(id = "text1" ,value = "Estimated Time: " + str(timer) + " s").cls("loading-title")
+            with div().cls("logo-div"):
+                image(value="https://aitools.ait.com.tr/AIT_AI_LOGO.png").cls("loading-logo")
 
     def start(self):
         self.remove_class("hidden")
