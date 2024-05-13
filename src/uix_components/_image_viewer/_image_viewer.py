@@ -11,11 +11,10 @@ icons_path = os.path.join(os.path.dirname(__file__), "icons")
 
 
 class image_viewer(uix.Element):
-    def __init__(self, id = None, value=None, buttonGroup={}, zoom=False, size=(500,500)):
+    def __init__(self, id = None, value=None, buttonGroup=None, zoom=False, size=(500,500)):
         super().__init__(id=id, value=value)
         self.tag = "div"
         self.value_name = None
-        self.buttonGroup = buttonGroup
      
         self.config = {
             "buttonGroup": buttonGroup,
@@ -90,21 +89,21 @@ class image_viewer(uix.Element):
 
 title = "Image Viewer"
 description = """
-## image_viewer(id, value, buttonGroup, zoom, size)
+## image_viewer(id: str, value: str, buttonGroup: dict, zoom: bool, size: tuple)
 1. Verilen resmi gösteren bir image viewer oluşturur.
 
 | attr                  | desc                                                                |
 | :-------------------- | :------------------------------------------------                   |
 | id                    | image_viewer elementinin id'si                                      |
 | value                 | image_viewer elementinin göstereceği image url'si veya Image objesi |
-| buttonGroup           | image_viewer elementinin sağ üst köşesindeki buton grubu.           |
+| buttonGroup           | image_viewer elementinin sağ üst köşesindeki buton grubu veri tipi: dict. boş '{}' dict ile butonlar gösterilmez.|
 | zoom                  | image_viewer elementinin zoom yapılmasını sağlar.                   |
 | size                  | image_viewer elementinin boyutu. (width, height)                    |
 """
 sample = """
 import random
+from uix_components import image_viewer
 from uix.elements import file, row, button,div
-from uix_components import image_viewer, basic_alert
 from uix.elements._image import title, description, sample as code
 
 buttonGroup= {
@@ -135,8 +134,6 @@ def on_button_pil_image_click(ctx, id, value):
     iw = ctx.session.elements["iw1"]
     iw.value = pil_image
 
-def on_button_click(ctx, id, value):    
-    ctx.elements["alert1"].open("alert-success",value)    
 
 def on_upload(ctx, id, event, data, status):
     print("on_upload", id, event, data, status)
@@ -146,13 +143,11 @@ def on_upload(ctx, id, event, data, status):
             iw.value = data[0].url
         
 def image_viewer_example():      
-    basic_alert("Image Viewer",id="alert1",type="success")
     with div() as main:
-            with row():
-                file(id="file1",accept="image/*",multiple=False,callback=on_upload).cls("center")
-                button("Show PIL Image",id="show_pil_image").on("click",on_button_pil_image_click)
-            iw1 = image_viewer(id = "iw1", value="https://ai.ait.com.tr/wp-content/uploads/AIT_AI_LOGO.png",buttonGroup=buttonGroup).size(400,400)
-            iw1.on("button_click",on_button_click).cls("border")
+        with row():
+            file(id="file1",accept="image/*",multiple=False,callback=on_upload).cls("center")
+            button("Show PIL Image",id="show_pil_image").on("click",on_button_pil_image_click)
+        image_viewer(id = "iw1", value="https://ai.ait.com.tr/wp-content/uploads/AIT_AI_LOGO.png",buttonGroup=buttonGroup).size(400,400)
     return main
 
 from PIL import Image, ImageDraw, ImageFilter
