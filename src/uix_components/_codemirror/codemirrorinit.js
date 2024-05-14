@@ -1,31 +1,38 @@
-event_handlers['codemirrorinit'] = function(id, value, event_name) {
-    console.log('codemirrorinit');
-  
+event_handlers['codemirror-init'] = function(id, value, event_name) {
+    
+    console.log(window.CodeMirror.modes.hasOwnProperty('python'));
+    if (CodeMirror.modes.hasOwnProperty('python')) {
+      console.log("Python modu yüklendi!");
+    } else {
+        console.error("Python modu yüklenemedi.");
+    }
+
+    // Get the target element based on the provided ID
+    const targetElement = document.getElementById("codemirror"); 
+
+    // Create a new CodeMirror editor instance
+    let editor = new window.CodeMirror.fromTextArea(targetElement, {
+      indentWithTabs: false,  // Use tabs for indentation
+      value: "function myScript(){return 100;}\n", // Set initial value (optional)
+      mode: "python", // Set editor mode
+      lineNumbers: true, // Enable line numbers
+      lineWrapping: true, // Enable line wrapping
+      autoCloseTags: true, // Enable auto-closing tags
+      autoCloseBrackets: true, // Enable auto-closing brackets
+      foldGutter: true, // Enable code folding
+      dragDrop: true, // Enable drag-and-drop
+      theme: "dark", // Use a visually appealing theme (optional)
+      gutters: ["lint"], // Add a linter gutter for code analysis (optional)
+      lint: true
+      // Add other editor customization options as needed
+    });
+    
     // Check if CodeMirror library is globally available
     if (typeof CodeMirror === 'undefined') {
       console.error('CodeMirror library not found. Please include it before calling this function.');
       return;
     }
   
-    // Get the target element based on the provided ID
-    const targetElement = document.getElementById("codemirror");        
-  
-    console.log(window.CodeMirror.modes.hasOwnProperty('python'));
-    // Create a new CodeMirror editor instance
-    let editor = new window.CodeMirror.fromTextArea(targetElement, {
-        value: "function myScript(){return 100;}\n", // Set initial value (optional)
-        mode: "python", // Set editor mode
-        lineNumbers: true, // Enable line numbers
-        lineWrapping: true, // Enable line wrapping
-        autoCloseTags: true, // Enable auto-closing tags
-        autoCloseBrackets: true, // Enable auto-closing brackets
-        foldGutter: true, // Enable code folding
-        dragDrop: true, // Enable drag-and-drop
-        theme: "dark", // Use a visually appealing theme (optional)
-        gutters: ["lint"], // Add a linter gutter for code analysis (optional)
-        lint: true
-        // Add other editor customization options as needed
-      });
 
     editor.setValue(value.string); // Set the editor content
     editor.on("change", function() {
