@@ -15,7 +15,9 @@ event_handlers["init-seadragon"] = function (id, value, event_name) {
     document.getElementById(id).viewer = OpenSeadragon(viewerConfig);
    let viewer = document.getElementById(id).viewer;
 
-createIcons(viewer,config.buttonGroup);
+    if (config.buttonGroup !== null) {
+        createIcons(viewer, config.buttonGroup);
+    }
 }
 
 function createIcons(viewer,config) {
