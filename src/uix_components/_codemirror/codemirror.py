@@ -16,7 +16,7 @@ class codemirror(uix.Element):
         self.func_name = func_name
         self.code = code
 
-        with self.cls("wall hall"):
+        with self:
             self.alert= basic_alert(id="comp_alert")
             textarea(id="codemirror").cls("wall hall").on("save", self.on_save)
 
