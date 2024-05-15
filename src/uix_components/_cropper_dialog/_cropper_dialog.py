@@ -26,47 +26,5 @@ class cropper_dialog(uix.Element):
         text("* İşleminiz bittiğinde imaj dışarısındaki bir alana tıklayarak işlemi gerçekleştirmiş olursunuz.")
         text("* Done butonuna basarak işlemi tamamlayabilirsiniz.")
         button("Done", id="doneButton").on("cropper-done", self.callback)
-
-
-title = "Cropper Dialog"
-
-
-description = """
-# cropper_dialog(id, image_url, callback)
-1. Cropper dialog bir image'ı crop etmek için kullanılır. Dialog içerisinde image'ı crop edebilir ve sonucu alabilirsiniz.
-    | attr          | desc                                                                                                 |
-    | :------------ | :-----------------------------------------------------------------------------------------------     |
-    | id           | Element id.                                                                                           |
-    | callback     | Crop işlemi bittiğinde çağrılacak fonksiyon, bu fonksiyonun value değeri croplanmış image url içerir. |
-    | image_url    | Cropper'ın başlangıçta göstereceği image url.                                                         |
-"""
-
-sample = """
-from uix_components._cropper_dialog._cropper_dialog import cropper_dialog
-from uix_components._input_image._input_image import input_image
-from uix.elements import button, col
-import uix_components
-import uix
-
-file_url = ""
-
-def crop_done(ctx, id, value):
-    options = {"url" : value, "id" : None}
-    ctx.elements["input-image-crop"].setImage(options)
-    ctx.elements["cropper_dialog"].image_url = value
-    ctx.elements["cropper_dialog"].hide()
-
-def upload_done(ctx, id, value):
-    global file_url
-    file_url = ctx.elements["input-image-crop"].file_url
-    ctx.elements["cropper_dialog"].image_url = file_url
-
-def cropper_dialog_example():
-    global file_url
-    cropper_dialog(id="cropper_dialog", callback = crop_done, image_url = file_url)
-    with col(id="cropper-col").cls("border").style("width","40%").style( "height","30%"):
-        input_image(id="input-image-crop", callback=upload_done).style("height","500px")
-        button("Crop", id="crop-button").on("click", lambda ctx, id, value: ctx.elements["cropper_dialog"].show())
-"""
         
         
