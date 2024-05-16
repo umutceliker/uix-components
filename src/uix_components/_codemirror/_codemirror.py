@@ -3,11 +3,10 @@ from uix.elements import textarea
 import types
 import uix
 
-uix.html.add_script_source("codemirrorjs","codemirror.js",False,__file__)
-#uix.html.add_header_item("codemirror-cdn",' <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/mode/python/python.min.js" integrity="sha512-/mavDpedrvPG/0Grj2Ughxte/fsm42ZmZWWpHz1jCbzd5ECv8CB7PomGtw0NAnhHmE/lkDFkRMupjoohbKNA1Q=="crossorigin="anonymous" referrerpolicy="no-referrer"></script>')
-uix.html.add_script_source("codemirrorpython","codemirrorpython.js",False,__file__)
-uix.html.add_script_source("codemirror-init","codemirrorinit.js",False,__file__)
-uix.html.add_css_file("codemirror.css",__file__)
+uix.html.add_script_source("codemirrorjs","_codemirror.js",False,__file__)
+uix.html.add_script_source("codemirrorpython","_codemirror_python.js",False,__file__)
+uix.html.add_script_source("codemirror-init","_codemirror_init.js",False,__file__)
+uix.html.add_css_file("_codemirror.css",__file__)
 
 class codemirror(uix.Element):
     def __init__(self, id=None, cm_parent_id=None, code=None, func_name=None):

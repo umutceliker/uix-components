@@ -116,6 +116,25 @@
     position: absolute
 }
 
+.cm-s-default .cm-keyword { color: #C586C0 ; } /* Keywords (def, class, etc.) */
+.cm-s-default .cm-atom { color: #9CDCFE ; }   /* Literals (True, False, None) */
+.cm-s-default .cm-number { color: #B5CEA8 ; }   /* Numbers */
+.cm-s-default .cm-def { color: #DCDCAA ; }     /* Function names */
+.cm-s-default .cm-variable { color: #9CDCFE ; } /* Variables */
+.cm-s-default .cm-operator { color: #D4D4D4 ; } /* Operators (+, -, *, /, etc.) */
+.cm-s-default .cm-string { color: #CE9178 ; }    /* Strings */
+.cm-s-default .cm-comment { color: #6A9955 ; }  /* Comments */
+.cm-s-default .cm-builtin { color: #4EC9B0 ; }  /* Built-in functions (print, len, etc.) */
+.cm-s-default .cm-property { color: #DCDCAA ; } /* Object properties */
+
+.cm-s-default .cm-decorator { color: #DCDCAA ; } /* Decorators (@classmethod, etc.) */
+.cm-s-default .cm-variable-2 { color: #4EC9B0 ; }  /* Class names */ 
+.cm-s-default .cm-string-2 { color: #CE9178 ; }    /* Docstrings or other string types */
+
+.CodeMirror-activeline-background { background: #333333 ; }
+.CodeMirror-matchingbracket { color: #ffd700 ; }
+.CodeMirror-nonmatchingbracket { color: #FF0000 ; }
+
 .cm-s-default .cm-header {
     color: #00f
 }
@@ -149,41 +168,9 @@
     text-decoration: line-through
 }
 
-.cm-s-default .cm-keyword {
-    color: #708
-}
-
-.cm-s-default .cm-atom {
-    color: #219
-}
-
-.cm-s-default .cm-number {
-    color: #164
-}
-
-.cm-s-default .cm-def {
-    color: #00f
-}
-
-.cm-s-default .cm-variable-2 {
-    color: #05a
-}
-
 .cm-s-default .cm-type,
 .cm-s-default .cm-variable-3 {
     color: #085
-}
-
-.cm-s-default .cm-comment {
-    color: #a50
-}
-
-.cm-s-default .cm-string {
-    color: #a11
-}
-
-.cm-s-default .cm-string-2 {
-    color: #f50
 }
 
 .cm-s-default .cm-meta {
@@ -192,10 +179,6 @@
 
 .cm-s-default .cm-qualifier {
     color: #555
-}
-
-.cm-s-default .cm-builtin {
-    color: #30a
 }
 
 .cm-s-default .cm-bracket {
@@ -230,27 +213,15 @@
     border-bottom: 2px solid
 }
 
-div.CodeMirror span.CodeMirror-matchingbracket {
-    color: #0b0
-}
-
-div.CodeMirror span.CodeMirror-nonmatchingbracket {
-    color: #a22
-}
-
 .CodeMirror-matchingtag {
     background: rgba(255, 150, 0, .3)
 }
 
-.CodeMirror-activeline-background {
-    background: #e8f2ff
-}
-
-.CodeMirror {
-    position: relative;
-    overflow: hidden;
-    background: var(--background-secondary)
-}
+.CodeMirror {      
+    height: 300px;
+    color: #D4D4D4; /* Default VS Code text color */
+    background: #1E1E1E; /* Default VS Code background */
+  }
 
 .CodeMirror-scroll {
     overflow: auto;
