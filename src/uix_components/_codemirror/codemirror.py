@@ -1,49 +1,52 @@
-import uix
-from uix.elements import div, textarea, label, text, embed, col, row
 from uix_components._basic_alert._basic_alert import basic_alert
+from uix.elements import textarea
 import types
+import uix
 
-import inspect
-
-uix.html.add_script_source("codemirrorjs","codemirror.js",True,__file__)
-uix.html.add_script_source("codemirrorpython","codemirrorpython.js",True,__file__)
+uix.html.add_script_source("codemirrorjs","codemirror.js",False,__file__)
+#uix.html.add_header_item("codemirror-cdn",' <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/mode/python/python.min.js" integrity="sha512-/mavDpedrvPG/0Grj2Ughxte/fsm42ZmZWWpHz1jCbzd5ECv8CB7PomGtw0NAnhHmE/lkDFkRMupjoohbKNA1Q=="crossorigin="anonymous" referrerpolicy="no-referrer"></script>')
+uix.html.add_script_source("codemirrorpython","codemirrorpython.js",False,__file__)
+uix.html.add_script_source("codemirror-init","codemirrorinit.js",False,__file__)
 uix.html.add_css_file("codemirror.css",__file__)
-uix.html.add_script_source("codemirrorinit","codemirrorinit.js",False,__file__)
 
 class codemirror(uix.Element):
-    def __init__(self, id=None, value=None, element_to_change = None, item_data=None,item_name=None, **kwargs):
-        super().__init__(id=id, **kwargs)
-        self.id = "codemirrordeneme"
-        self.item_data = item_data
-        self.element_to_change = element_to_change
-        self.item_name = item_name
+    def __init__(self, id=None, cm_parent_id=None, code=None, func_name=None):
+        super().__init__(id=id)
+        self.cm_parent_id = cm_parent_id
+        self.func_name = func_name
+        self.code = code
 
-        with self.cls("wall hall"):
-            self.alert = basic_alert()
+        with self:
+            self.alert= basic_alert(id="comp_alert")
             textarea(id="codemirror").cls("wall hall").on("save", self.on_save)
-            with div(id="exceptions"): 
-                text("").style("color","red")
 
     def on_save(self, ctx, id, value):
         try:
-            value = value.strip()
-
+            modified_code = value.replace("\t", "    ")
             dynamic_module = types.ModuleType("dynamic_module")
             globals().update(vars(dynamic_module))
-
-            exec(value, dynamic_module.__dict__)
-
-            file_example_func = getattr(dynamic_module, self.item_name+"_example", None)
+            exec(modified_code, dynamic_module.__dict__)
+            file_example_func = getattr(dynamic_module, self.func_name, None)
+            
             if file_example_func:
-                with row(id=self.element_to_change).style("align-items:flex-start; justify-content:center;") as update_container:
+                with ctx.elements[self.cm_parent_id] as parent_container:
                     file_example_func()
+                    parent_container.update()        
+                self.show_alert("alert-success", "Code executed successfully") 
             else:
-                print("_example function not found in the provided code")
+                self.show_alert("alert-danger", f"Function {self.func_name} not found in code")
 
-            update_container.update()
+        except SyntaxError as syntax_err:
+            self.show_alert("alert-danger", f"Syntax Error: {syntax_err}")
+
+        except NameError as name_err:
+            self.show_alert("alert-danger", f"Name Error: {name_err}")
+            
         except Exception as e:
-            self.alert.open("danger", "Error compiling/executing code: " + str(e))
-            print("Error compiling/executing code:", e)
+            self.show_alert("alert-danger", "Error compiling/executing code: " + str(e))
 
     def init(self):
-        self.session.queue_for_send(self.id, {"string":"Selam"}, "codemirrorinit")
+        self.session.queue_for_send(self.id, {"string": self.code}, "codemirror-init")
+    
+    def show_alert(self, alert_type, message):
+        self.alert.open(alert_type, message)
