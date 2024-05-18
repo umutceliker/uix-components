@@ -62,6 +62,9 @@ class output_image(uix.Element):
 
     def set_image(self,ctx, id=None, value=None):
         url = value
+        if isinstance(value, dict):
+            url = value.get("url")
+
         imageID = id
         if url or imageID is not None:
             self.output_loading.add_class("hidden")
