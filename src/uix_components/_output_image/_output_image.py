@@ -62,6 +62,9 @@ class output_image(uix.Element):
 
     def set_image(self,ctx, id=None, value=None):
         url = value
+        if isinstance(value, dict):
+            url = value.get("url")
+
         imageID = id
         if url or imageID is not None:
             self.output_loading.add_class("hidden")
@@ -128,25 +131,5 @@ class output_image(uix.Element):
 
 
     
-title = "Output Image"
-description = """
-## output_image(value=None, id=None, viewer="seadragon",callback=None, add_to_favorite=None)
 
-1- Resim göstermek için kullanılır.
-
-| attr                  | desc                                              |
-| :-------------------- | :------------------------------------------------ |
-| viewer                | Resim gösterme türü. "seadragon" veya "fabric" olabilir. |
-| setinputImage         | Resmi input_image kısmına göndermek için kullanılır. |
-| add_to_favorite       | Resmi favorilere eklemek için kullanılır. |
-
-"""
-
-sample = """
-def output_image_example():
-
-    with col(id="imagine-input-col").cls("border").style("width","50%") as output_image_test:
-        output_image(id="output_image").style("height","500px")
-    return output_image_test
-"""
 
