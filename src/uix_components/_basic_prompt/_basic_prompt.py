@@ -63,6 +63,7 @@ uix.html.add_script_source(id="prompt_ui",script="_basic_prompt.js",beforeMain=F
 class basic_prompt(uix.Element):
     def __init__(self, value = None, id = None, options = [], is_prompt_generator_open = True):
         super().__init__(value, id = id)
+        print("Prompt Generator Open: ", is_prompt_generator_open)
         self.is_prompt_generator_open = is_prompt_generator_open
         self.texts = []
         
@@ -76,7 +77,8 @@ class basic_prompt(uix.Element):
             }
         ]
 
-        self.is_prompt_generator_open = True if len(self.prompt_generator_datas) > 0 else False
+        if self.is_prompt_generator_open:
+            self.is_prompt_generator_open = True if len(self.prompt_generator_datas) > 0 else False
 
         if self.is_prompt_generator_open:
             self.prompt_options.append({
@@ -104,19 +106,24 @@ class basic_prompt(uix.Element):
             with div(id="bottom").cls("hidden") as self.bottom:
                 self.bottom_content_manager()
 
-    def bottom_content_manager(self):
+    def bottom_content_manager(self):   
         with row("",id="bottom-content").cls("bottom-content") as bottom_content:
             if self.bottom_content_type == "Examples":
                 self.example()
             else:
                 self.example()
             with div(id="prompt-generator-options").cls("prompt-generator-options").style("height","fit-content"):
-                print(self.bottom_content_type)
                 for option in self.prompt_options:
                     if self.bottom_content_type == option["name"]:
                         button(option["name"],id=option["id"]).cls("wall").on("click", self.set_bottom_content)
                     else:
-                        button(option["name"],id=option["id"]).cls("wall prompt-btn-toggle").on("click", self.set_bottom_content)
+                        if option["name"] == "Prompt Builder":
+                            button(option["name"],id=option["id"]).cls("wall prompt-btn-toggle fa-fade").on("click", self.set_bottom_content)
+                        else:
+                            button(option["name"],id=option["id"]).cls("wall prompt-btn-toggle").on("click", self.set_bottom_content)
+                if self.is_prompt_generator_open == False:
+                    with button("Prompt Builder", disabled=True).cls("prompt-btn-toggle").style("font-size:12px; text-wrap: nowrap;"):
+                        text("Business").cls("business-only")
 
         return bottom_content
 
@@ -197,12 +204,6 @@ class basic_prompt(uix.Element):
                             image(value=ref_image+"?is-atr=m").style("border:1px solid black;outline: 2px solid white;").cls("ref-image")
                         else:
                             image(value=ref_image+"?is-atr=m").cls("ref-image").on("click", lambda ctx, id, value, ref_image=ref_image: self.on_ref_image_click(ctx, id, ref_image))
-                    # with button("","prev-ref-image").on("click", self.prev).style("gap","10px").style("align-items","center"):
-                    #     icon("fa-solid fa-arrow-left")
-                    #     text("Previous")
-                    # with button("","next-ref-image").on("click", self.next).style("justify-content","flex-end").style("align-items","center").style("gap","10px"):
-                    #     text("Next")
-                    #     icon("fa-solid fa-arrow-right")
                 self.ref_image = imagecard(id="ref-image", imagesrc=self.selected_ref_image_data["ref_image_url"], textstr="Reference Image").style("pointer-events","none").cls("hall").style("display","flex")
 
     def on_dialog_close(self,ctx, id, value):
@@ -352,29 +353,6 @@ class basic_prompt(uix.Element):
         else:
             return "Prompt Generator is not open", 400
 
-    # def next(self, ctx, id, value):
-    #     if self.prompt_generator_datas:
-    #         # Get the current index
-    #         current_index = self.prompt_generator_datas.index(self.selected_ref_image_data)
-    #         next_index = (current_index + 1) % len(self.prompt_generator_datas)
-    #         # Update attributes based on the next index
-    #         self.selected_ref_image_data = self.prompt_generator_datas[next_index]
-    #         self.prompt_generator_type = self.prompt_generator_datas[next_index]["datas"][0]["title"]
-    #         # Call any other methods if needed
-    #         ctx.elements["prompt-generator-content"].update(self.prompt_generator)
-
-    # def prev(self, ctx, id, value):
-    #     if self.prompt_generator_datas:
-    #         # Get the current index
-    #         current_index = self.prompt_generator_datas.index(self.selected_ref_image_data)
-    #         # Calculate the previous index
-    #         prev_index = (current_index - 1) % len(self.prompt_generator_datas)
-    #         # Update attributes based on the previous index
-    #         self.selected_ref_image_data = self.prompt_generator_datas[prev_index]
-    #         self.prompt_generator_type = self.prompt_generator_datas[prev_index]["datas"][0]["title"]
-    #         # Call any other methods if needed
-    #         ctx.elements["prompt-generator-content"].update(self.prompt_generator)
-        
     def on_ref_image_click(self, ctx, id, value):
         for ref_image in self.ref_images:
             if ref_image == value:

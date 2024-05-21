@@ -35,6 +35,14 @@
     transition: all 0.3s ease-in-out;
 }
 
+.business-only {
+    outline: 1px solid var(--ait);
+    text-wrap: nowrap;
+    padding: 5px;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
 /* .btn-ref-image {
     position: absolute;
     top: 0;
