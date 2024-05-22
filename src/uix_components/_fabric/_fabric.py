@@ -1,7 +1,8 @@
 import uix
 from uix.elements import canvas
-uix.html.add_header_item("fabric-cdn",'<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>')
+# uix.html.add_header_item("fabric-cdn",'<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>')
 # uix.html.add_script_source('fabric-js', 'fabric.js',localpath=__file__, beforeMain=False)
+uix.html.add_script_source('fabric-js-local', 'fabric.min.js',localpath=__file__, beforeMain=False)
 uix.html.add_script_source('image-cropper', 'image_cropper.js',localpath=__file__, beforeMain=False)
 
 class fabric(canvas):
