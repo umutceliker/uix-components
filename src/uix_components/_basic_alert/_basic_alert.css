@@ -10,7 +10,7 @@
     position: absolute;
     bottom: 0px;
     right: 0px;
-    display: flex;
+    display: none;
     word-wrap: break-word;
     align-items: flex-start;
     height: fit-content;

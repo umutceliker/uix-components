@@ -4,6 +4,7 @@ uix.html.add_css_file("_basic_alert.css",__file__)
 uix.html.add_script("_basic_alert.js","""
 event_handlers["alert-open"] = function(id, value, event_name){
     var alertContainer = document.getElementById("comp_alert");
+    alertContainer.style.display = "flex";
 
     var alertDiv = document.createElement("div");
     alertDiv.className = value.type + " alert-child alert-close";
@@ -24,6 +25,9 @@ event_handlers["alert-open"] = function(id, value, event_name){
 
     alertDiv.addEventListener("animationend", function(){
         alertContainer.removeChild(alertDiv);
+        if(alertContainer.childElementCount == 0){
+            alertContainer.style.display = "none";
+        }
     });             
 }
                     
