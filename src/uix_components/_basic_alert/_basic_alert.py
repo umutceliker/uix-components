@@ -24,6 +24,9 @@ event_handlers["alert-open"] = function(id, value, event_name){
 
     alertDiv.addEventListener("animationend", function(){
         alertContainer.removeChild(alertDiv);
+        if(alertContainer.childElementCount == 0){
+            alertContainer.style.display = "none";
+        }
     });             
 }
                     
@@ -35,6 +38,7 @@ class basic_alert(uix.Element):
         self.cls("alert")
 
     def open(self, type, value, icon=None):
+        self.set_style("display", "flex")
         opt = {
             "type": type,
             "message": value,
