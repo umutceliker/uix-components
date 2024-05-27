@@ -80,17 +80,100 @@ event_handlers["init-image-cropper"] = function (id, value, event_name) {
     opt.e.stopPropagation();
   });
 
-  canvas.on('mouse:move', function (opt) {
+  canvas.on('mouse:move', function(opt) {
     if (opt.e.buttons === 1 && !opt.e.ctrlKey) {
-      var delta = new fabric.Point(opt.e.movementX, opt.e.movementY);
-      canvas.relativePan(delta);
+      panCanvas(opt.e.movementX, opt.e.movementY);
+    }
+  });
 
-      if (typeof input_canvas_id !== 'undefined' && input_canvas_id) {
-        let inputCanvas = document.getElementById(input_canvas_id).canvas;
-        inputCanvas.relativePan(delta);
+  canvas.on('touch:drag', function(opt) {
+    if (!opt.e.touches) {
+      this.lastPosX = undefined;
+      this.lastPosY = undefined;
+      this.lastDistance = undefined;
+    }
+
+    if (opt.e.touches?.length > 0) {
+      const isPan = opt.e.touches.length === 1;
+      const isPinchZoom = opt.e.touches.length === 2;
+  
+      if (isPan) {
+        const touch = opt.e.touches[0];
+        if (this.lastPosX !== undefined && this.lastPosY !== undefined) {
+          var deltaX = touch.clientX - this.lastPosX;
+          var deltaY = touch.clientY - this.lastPosY;
+          panCanvas(deltaX, deltaY);
+        }
+        this.lastPosX = touch.clientX;
+        this.lastPosY = touch.clientY;
+      }
+  
+      if (isPinchZoom) {
+        const touch1 = opt.e.touches[0];
+        const touch2 = opt.e.touches[1];
+  
+        const distance = Math.hypot(
+          touch2.clientX - touch1.clientX,
+          touch2.clientY - touch1.clientY
+        );
+  
+        if (this.lastDistance !== undefined) {
+          const deltaDistance = distance - this.lastDistance;
+          handlePinchZoom(deltaDistance);
+        }
+  
+        this.lastDistance = distance;
       }
     }
   });
+
+  function panCanvas(deltaX, deltaY) {
+    var delta = new fabric.Point(deltaX, deltaY);
+    canvas.relativePan(delta);
+
+    if (typeof input_canvas_id !== 'undefined' && input_canvas_id) {
+      let inputCanvas = document.getElementById(input_canvas_id).canvas;
+      inputCanvas.relativePan(delta);
+    }
+  }
+
+  function handlePinchZoom(deltaDistance) {
+    var proposedScale = currentScale;
+    if (proposedScale >= MIN_SCALE && proposedScale <= MAX_SCALE) {
+      currentScale = proposedScale;
+      if (typeof repeater_checkbox !== 'undefined' && repeater_checkbox && repeater_checkbox.checked) {
+        var zoom = canvas.getZoom();
+        zoom *= 1 + deltaDistance * 0.01;
+        if (zoom > MAX_SCALE) zoom = MAX_SCALE;
+        if (zoom < MIN_SCALE) zoom = MIN_SCALE;
+  
+        var center = canvas.getCenter();
+        canvas.zoomToPoint({ x: center.left, y: center.top }, zoom);
+        let axisToUse = document.getElementById(id).lastAxisMoved;
+        let scaleToUse = document.getElementById(id).moveRates[axisToUse];
+        updateImagePattern(canvas, document.getElementById(id).image, currentScale, id, axisToUse, scaleToUse);
+  
+        if (typeof input_canvas_id !== 'undefined' && input_canvas_id) {
+          let inputCanvas = document.getElementById(input_canvas_id).canvas;
+          inputCanvas.zoomToPoint({ x: center.left, y: center.top }, zoom);
+          updateImagePattern(inputCanvas, document.getElementById(input_canvas_id).image, currentScale, input_canvas_id, axisToUse, scaleToUse);
+        }
+        return;
+      }
+      var zoom = canvas.getZoom();
+      zoom *= 1 + deltaDistance * 0.01;
+      if (zoom > MAX_SCALE) zoom = MAX_SCALE;
+      if (zoom < MIN_SCALE) zoom = MIN_SCALE;
+  
+      var center = canvas.getCenter();
+      canvas.zoomToPoint({ x: center.left, y: center.top }, zoom);
+  
+      if (typeof input_canvas_id !== 'undefined' && input_canvas_id) {
+        let inputCanvas = document.getElementById(input_canvas_id).canvas;
+        inputCanvas.zoomToPoint({ x: center.left, y: center.top }, zoom);
+      }
+    }
+  }
 
   event_handlers["repeater-checkbox"](id, value, event_name);
   brush_element_id.addEventListener('change', function (e) {
@@ -141,10 +224,11 @@ event_handlers["image-cropper"] = function (id, command, event_name) {
           transparentCorners: false,
           noScaleCache: false,
           strokeWidth: 0,
-          //lockMovementX: true,
-          //lockMovementY: true,
+          lockMovementX: true,
+          lockMovementY: true,
           patternGroup: true,
           objectCaching: false,
+          lockRotation: true
         });
         document.getElementById(id).canvas.add(img);
         document.getElementById(id).image = img;
@@ -283,8 +367,9 @@ function moveImage(axis, canvas, originalImage, reportRate, id) {
     transparentCorners: false,
     noScaleCache: false,
     strokeWidth: 0,
-    //lockMovementX: true,
-    //lockMovementY: true,
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
   });
 
   canvas.remove(originalImage);
@@ -354,10 +439,11 @@ function updateImagePattern(canvas, originalImage, scale, id, axis, reportRate) 
           transparentCorners: false,
           noScaleCache: false,
           strokeWidth: 0,
-          //lockMovementX: true,
-          //lockMovementY: true,
+          lockMovementX: true,
+          lockMovementY: true,
           patternGroup: true,
           objectCaching: false,
+          lockRotation: true,
         });
         imagesArray.push(clonedImg);
       }
@@ -374,10 +460,11 @@ function updateImagePattern(canvas, originalImage, scale, id, axis, reportRate) 
       transparentCorners: false,
       noScaleCache: false,
       strokeWidth: 0,
-      //lockMovementX: true,
-      //lockMovementY: true,
+      lockMovementX: true,
+      lockMovementY: true,
       patternGroup: true,
       objectCaching: false,
+      lockRotation: true,
     });
 
     canvas.add(group);
@@ -408,9 +495,3 @@ function drawRect(finalCtx, originalImage, brushSize, rateX, rateY) {
   finalCtx.closePath();
 
 }
-
-
-
-
-
-
