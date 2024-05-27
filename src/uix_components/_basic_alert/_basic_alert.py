@@ -4,6 +4,7 @@ uix.html.add_css_file("_basic_alert.css",__file__)
 uix.html.add_script("_basic_alert.js","""
 event_handlers["alert-open"] = function(id, value, event_name){
     var alertContainer = document.getElementById("comp_alert");
+    alertContainer.style.display = "flex";
 
     var alertDiv = document.createElement("div");
     alertDiv.className = value.type + " alert-child alert-close";
@@ -38,7 +39,6 @@ class basic_alert(uix.Element):
         self.cls("alert")
 
     def open(self, type, value, icon=None):
-        self.set_style("display", "flex")
         opt = {
             "type": type,
             "message": value,
