@@ -123,6 +123,7 @@ class output_image(uix.Element):
         elif value == "Full screen":
             self.image_viewer.fullscreen()
         elif value == "Download":
+            self.addToFavorite(ctx, "download", value)
             self.image_viewer.download()
         elif value == "Send to input":
             self.sendToInput(ctx, id, self.value)

@@ -12,6 +12,7 @@ class basic_select(select):
         super().__init__( id=id, **kwargs)
         self.options = options
         self.callback = callback
+        self.value = value
 
         with self.on("change", self.on_change):    
             if type(self.options) == list:

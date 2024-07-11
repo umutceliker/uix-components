@@ -5,12 +5,15 @@ import uix
 from uix.elements import button, border, input, canvas, text, div, row, header, col, label, icon, image
 from uix_components import basic_imagecard as imagecard
 from uix_components import basic_dialog as dialog
-
+from dotenv import load_dotenv
 from uix import T
+
+load_dotenv()
+cur_path = os.getenv("PROMPT_BUILDER_IMAGES_PARENT_PATH")
 
 uix.html.add_css_file("_basic_prompt.css",__file__)
 
-cur_path = os.path.dirname(os.path.abspath(__file__))
+json_path = os.path.dirname(os.path.abspath(__file__))
 
 def get_image_data(folder_path):
     data = []
@@ -49,14 +52,17 @@ def get_image_data(folder_path):
             data.append(super_folder_item)        
     return data
 
-image_data = get_image_data(f"{cur_path}/images")
+try:
+    image_data = get_image_data(f"{cur_path}/images")
 
-prompt_json = open(f"{cur_path}/prompt.json", "r",encoding="utf-8")
-prompt_test = prompt_json.read()
-examples = json.loads(prompt_test)
+    with open(f"{json_path}/prompt.json", "r", encoding="utf-8") as prompt_json:
+        examples = json.load(prompt_json)
+    prompt_example = examples["examples"]
+except Exception as e:
+    image_data = []
+    prompt_example = {}
 
-prompt_json.close()
-prompt_example = examples["examples"]
+images_path = f"{cur_path}/images"
 
 uix.html.add_script_source(id="prompt_ui",script="_basic_prompt.js",beforeMain=False,localpath=__file__)
 
@@ -142,13 +148,9 @@ class basic_prompt(uix.Element):
         prompt_content.update(self.prompt_content)
         self.prompt_input.focus() 
 
-
-    def add_prompt_from_images(self, ctx, id, value):
-        self.on_change(ctx, id, value["value"], True)
-
     def dialog_content(self):
         with col(id="dialog-content").cls("dialog-content") as dialog_content:
-                with row("", id="prompt-generator-prompt").cls("prompt-texts prompt prompt-generator-prompt").style("height","15%").on("add-prompt", self.add_prompt_from_images):
+                with row("", id="prompt-generator-prompt").cls("prompt-texts prompt prompt-generator-prompt").style("height","15%").on("add-prompt", lambda ctx, id, value: self.on_change(ctx, id, value["value"], True)):
                     self.prompt_generator_prompt_area()
                 with row("", id="prompt-generator-content").cls("prompt-generator-content"):
                     if self.is_dialog_open:
@@ -302,16 +304,27 @@ class basic_prompt(uix.Element):
     def pop_image(self, ctx, id, value):
         self.session.send(id, {"id": id, "value": value}, "delete-prompt-image")
 
+
+    def on_ref_image_click(self, ctx, id, value):
+        for ref_image in self.ref_images:
+            if ref_image == value:
+                self.selected_ref_image_data = self.prompt_generator_datas[self.ref_images.index(ref_image)]
+                self.prompt_generator_type = self.selected_ref_image_data["datas"][0]["title"]
+                ctx.elements["prompt-generator-content"].update(self.prompt_generator)
+
+    def init(self):
+        self.create_resize_api()
+        self.call_js()
+
     def call_js(self):
         self.session.queue_for_send("init-prompt", {"promptID":self.id,"inputID": "prompt-input", "historyID": "prompt-generator"}, "init-prompt")
 
+    ###### Resize API for prompt generator ######
     def create_resize_api(self):
         if self.is_prompt_generator_open:
             uix.app.register_api_handler("prompt_image", self.serve_prompt_image)
 
     def serve_prompt_image(self, paths, args):
-        images_path = f"{cur_path}/images"
-
         is_atr = args.get("is-atr", False)
 
         if paths[-1] == 'ref-image.png':
@@ -327,12 +340,10 @@ class basic_prompt(uix.Element):
         image_path = paths[1] + "/" + paths[2] + "/" + paths[3]
         full_path = os.path.join(images_path, image_path)
 
-        print("Serving image", full_path)
         if not os.path.exists(full_path):
             return "Image not found" + full_path, 404
         
         if is_atr:
-            print("is-atr")
             downsized_image_path = f"{cur_path}/resized_images/{image_path}"
             os.makedirs(os.path.dirname(downsized_image_path), exist_ok=True)
             if not os.path.exists(downsized_image_path):
@@ -352,14 +363,3 @@ class basic_prompt(uix.Element):
                 print(e)
         else:
             return "Prompt Generator is not open", 400
-
-    def on_ref_image_click(self, ctx, id, value):
-        for ref_image in self.ref_images:
-            if ref_image == value:
-                self.selected_ref_image_data = self.prompt_generator_datas[self.ref_images.index(ref_image)]
-                self.prompt_generator_type = self.selected_ref_image_data["datas"][0]["title"]
-                ctx.elements["prompt-generator-content"].update(self.prompt_generator)
-
-    def init(self):
-        self.create_resize_api()
-        self.call_js()

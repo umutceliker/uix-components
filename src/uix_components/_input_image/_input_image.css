@@ -59,3 +59,26 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.color-picker-container{
+    position: absolute;
+    top: 5%;
+    display: none;
+    width: 205px;
+    height: max-content;
+    border-radius: 8px;
+    background-color: var(--border-color);
+    z-index: 10;
+    padding: 16px;
+    gap: 10px;
+}
+
+.active{
+    display: flex !important;
+  }
+  
+.brush-tool-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
