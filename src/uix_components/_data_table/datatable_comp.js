@@ -1,17 +1,45 @@
 
 
 event_handlers["init-data-table"] = function (id, value, event_name) {
+    document.onkeydown = function(e) {
+        var targetElement;
+        switch (e.keyCode) {
+            case 37:
+                targetElement = document.querySelector('.previous');
+                break;
+            case 38:
+                targetElement = document.querySelector('.first');
+                break;
+            case 39:
+                targetElement = document.querySelector('.next');
+                break;
+            case 40:
+                targetElement = document.querySelector('.last');
+                break;
+        }
+
+        if (targetElement) {
+            var clickEvent = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            });
+            targetElement.dispatchEvent(clickEvent);
+        }
+    };
     dataTable_config = {
         data: value.data,
         columns: value.columns,
         columnDefs: [],
         pageLength: 20,
+        
     };
     
     dataTable_config = Object.assign(dataTable_config, value.dataTable_config);
 
     const table=new DataTable("#"+id, dataTable_config);
 
+    document.getElementById(id).table = table;
     if (value.isEditable) {
         editableRow(id);
         table.on('click', 'td', function(evt) {
@@ -26,7 +54,8 @@ event_handlers["init-data-table"] = function (id, value, event_name) {
     })
     }
 
-    document.getElementById(id).table = table;
+
+
 
 }
 
@@ -41,7 +70,7 @@ event_handlers["reload"] = function (id, value, event_name) {
     editableRow(id);
 }
 
-function editableRow(id){
+function editableRow(id,table){
         const rows=document.querySelectorAll("#"+id+" > tbody > tr");    
         rows.forEach(row => {
             row.style.cursor = 'pointer';

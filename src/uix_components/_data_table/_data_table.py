@@ -1,4 +1,5 @@
 from uix.elements import table, tr, th, td, div, button, input, span,thead, tbody,icon
+from uix import T
 from uix.core.session import context
 import types
 import uix
@@ -35,11 +36,11 @@ class data_table(uix.Element):
                         if cols:
                             for key, value in cols.items():
                                 columns.append({"data": key})
-                                th(value)
+                                th(T(value))
                         else:
                             for key in data[0].keys():
                                 columns.append({"data": key})
-                                th(key)
+                                th(T(key))
 
                         
                     
