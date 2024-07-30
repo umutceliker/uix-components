@@ -35,6 +35,10 @@
    text-align: center;
    cursor: pointer;
  }
+ table.dataTable td{
+    word-break: break-word;
+    width: max-content !important;
+ }
  table.dataTable td.dt-control:before {
    display: inline-block;
    box-sizing: border-box;

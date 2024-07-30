@@ -4,7 +4,7 @@ import uix
 uix.html.add_css_file("_tree_view.css",__file__)
 
 class tree_view(uix.Element):
-    def __init__(self, id=None, data=None, callback=None, selected_label=None):
+    def __init__(self, id=None, data=None, callback=None, selected_label=None, default_open=True):
         super().__init__(id=id)
         self.data = data or {}
         self.callback = callback
@@ -13,7 +13,7 @@ class tree_view(uix.Element):
         with self:
             with unorderedlist().cls("tree"):
                 for main_title, items in self.data.items():
-                    self.create_tree(main_title, items, main_title == list(self.data.keys())[0])  
+                    self.create_tree(main_title, items, default_open and list(self.data.keys())[0])  
 
     def create_tree(self, key, data, isOpen=False):
         with listitem(id=f"li-{key.lower()}"):
